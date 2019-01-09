@@ -29,7 +29,7 @@
 			"sha256-min.js",
 			"sha3-min.js",
 			"ripemd160-min.js",
-			"enc-base64-min.js",
+			"crypto-js/enc-base64.js",
 			"sitepw.js",
 			"sitepw-extension.js"
 		]

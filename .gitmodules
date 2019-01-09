@@ -1,0 +1,4 @@
+[submodule "crypto-js"]
+	path = crypto-js
+	url = https://github.com/brix/crypto-js
+	branch = master
