@@ -108,14 +108,17 @@ function get_sitepw(url, allow_write) {
 	}
 	return sitepw(site_settings.alias, site_settings.generation, method.func, site_settings.len, pw);
 }
+var q = Promise.resolve();
 function do_sitepw(tab) {
-	get_sitepw(tab.url, true).then(function(password) {
-		chrome.tabs.executeScript(tab.id, {"file": "sitepw-extension-contentscript.js"}, function(fieldnames) {
-			var message = {};
-			for (i = 0; i < fieldnames.length; ++i)
-				message[fieldnames[i]] = password;
-			chrome.tabs.sendMessage(tab.id, message);
-		}));
+	q = q.finally(function() {
+		return get_sitepw(tab.url, true).then(function(password) {
+			chrome.tabs.executeScript(tab.id, {"file": "sitepw-extension-contentscript.js"}, function(fieldnames) {
+				var message = {};
+				for (i = 0; i < fieldnames.length; ++i)
+					message[fieldnames[i]] = password;
+				chrome.tabs.sendMessage(tab.id, message);
+			}));
+		});
 }
 
 function init() {

@@ -4,12 +4,15 @@
 
 var masterpw, site, generation, pw, method, len;
 var generation_dirty;
+var q = Promise.resolve();
 function do_sitepw() {
-  var sitename = getsitename(site.value);
-  sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then(function(password) {
-    pw.value = password;
-    if (document.activeElement == pw)
-      pw.select();
+  q = q.finally(function() {
+    var sitename = getsitename(site.value);
+    return sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then(function(password) {
+      pw.value = password;
+      if (document.activeElement == pw)
+        pw.select();
+    });
   });
 }
 var timed_sitepw_timer;
