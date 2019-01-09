@@ -1,0 +1,43 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+	"manifest_version": 2,
+	"name": "SitePW",
+	"version": "1.0",
+
+	"description": "Hash based password manager",
+	"icons": {},
+
+	"browser_action": {
+		"default_title": "SitePW"
+	},
+	"commands": {
+		"_execute_browser_action": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+S",
+				"mac": "Ctrl+Shift+S"
+			}
+		}
+	},
+
+	"author": "Rudolf Polzer <rpolzer@google.com>",
+	"background": {
+		"persistent": true,
+		"scripts": [
+			"hmac-sha512.js",
+			"sha1-min.js",
+			"sha256-min.js",
+			"sha3-min.js",
+			"ripemd160-min.js",
+			"enc-base64-min.js",
+			"sitepw.js",
+			"sitepw-extension.js"
+		]
+	},
+	"permissions": [
+		"activeTab",
+		"storage"
+	],
+	"options_page": "sitepw-extension-options.html"
+}
+

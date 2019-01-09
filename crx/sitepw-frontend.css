@@ -1,0 +1,61 @@
+body {
+  font-family: monospace;
+  font-size: 16pt;
+  color: #fff;
+  background-color: #040;
+}
+dl {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+dt {
+  font-weight: bold;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+dd {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 2em;
+}
+input, select, option {
+  font-size: 2em;
+  width: 100%;
+  text-align: center;
+  color: #8f8;
+  border: none;
+  background-color: #020;
+  font-family: monospace;
+}
+#overrides {
+  font-size: 0.6em;
+}
+#overrides option {
+  text-align: left;
+}
+#overrides_delete, #overrides_edit, #overrides_password, #overrides_add {
+  padding: 0;
+  margin: 0;
+  width: 25%;
+}
+#overrides_mark_as_old, #overrides_mark_as_current {
+  padding: 0;
+  margin: 0;
+  width: 50%;
+}
+a {
+  color: #88f;
+}
+#left {
+  width: 49%;
+  float: left;
+}
+#right {
+  width: 49%;
+  float: right;
+}
