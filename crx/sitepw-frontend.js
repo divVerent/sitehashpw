@@ -3,6 +3,7 @@
  */
 
 var masterpw, site, generation, pw, method, len;
+var generation_dirty;
 function do_sitepw() {
   var sitename = getsitename(site.value);
   pw.value = sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value);
@@ -15,6 +16,20 @@ function timed_sitepw() {
     clearTimeout(timed_sitepw_timer);
   localStorage.setItem("len", len.value);
   localStorage.setItem("method", method.options[method.selectedIndex].value);
+  if (this == generation) {
+    var sitename = getsitename(site.value);
+    if (generation.value == "1")
+      localStorage.removeItem("generation." + sitename);
+    else
+      localStorage.setItem("generation." + sitename, generation.value);
+  }
+  if (this == site) {
+    var sitename = getsitename(site.value);
+    var generation_new = localStorage.getItem("generation." + sitename);
+    if (generation_new == null || generation_new == "")
+      generation_new = "1";
+    generation.value = generation_new;
+  }
   timed_sitepw_timer = setTimeout(function() { do_sitepw(); }, 300);
   return true;
 }
@@ -42,9 +57,9 @@ function init() {
   document.getElementById("bookmarklet").href = "javascript:void(window.open(\"" + location.href + "#\"+location.href));";
 
   // Load stuff.
-  if (localStorage.getItem("len") != null && localStorage.getItem("len") != "")
+  if (localStorage.getItem("len") != "")
     len.value = localStorage.getItem("len");
-  if (localStorage.getItem("method") != null && localStorage.getItem("method") != "")
+  if (localStorage.getItem("method") != "")
     for (var i = 0; i < method.options.length; ++i)
       if (method.options[i].value == localStorage.getItem("method"))
         method.selectedIndex = i;

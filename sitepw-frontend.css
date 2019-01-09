@@ -32,6 +32,22 @@ input, select, option {
   background-color: #020;
   font-family: monospace;
 }
+#overrides {
+  font-size: 0.6em;
+}
+#overrides option {
+  text-align: left;
+}
+#overrides_delete, #overrides_edit, #overrides_password, #overrides_add {
+  padding: 0;
+  margin: 0;
+  width: 25%;
+}
+#overrides_mark_as_old, #overrides_mark_as_current {
+  padding: 0;
+  margin: 0;
+  width: 50%;
+}
 a {
   color: #88f;
 }
