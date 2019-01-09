@@ -24,11 +24,14 @@
 	"background": {
 		"persistent": true,
 		"scripts": [
-			"hmac-sha512.js",
-			"sha1-min.js",
-			"sha256-min.js",
-			"sha3-min.js",
-			"ripemd160-min.js",
+			"crypto-js/core.js",
+			"crypto-js/x64-core.js",
+			"crypto-js/hmac.js",
+			"crypto-js/sha512.js",
+			"crypto-js/sha1.js",
+			"crypto-js/sha256.js",
+			"crypto-js/sha3.js",
+			"crypto-js/ripemd160.js",
 			"crypto-js/enc-base64.js",
 			"sitepw.js",
 			"sitepw-extension.js"
