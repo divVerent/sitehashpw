@@ -117,8 +117,9 @@ function do_sitepw(tab) {
 				for (i = 0; i < fieldnames.length; ++i)
 					message[fieldnames[i]] = password;
 				chrome.tabs.sendMessage(tab.id, message);
-			}));
+			});
 		});
+	});
 }
 
 function init() {
@@ -137,7 +138,8 @@ function init() {
 						sendResponse(out);
 					}
 					if (request.sitepw_get_password != null) {
-						sendResponse(get_sitepw(request.sitepw_get_password, false));
+						get_sitepw(request.sitepw_get_password, false).then(sendResponse);
+						return true;  // We'll sendResponse asynchronously.
 					}
 					if (request.sitepw_update_settings != null) {
 						update_settings(request.sitepw_update_settings);
