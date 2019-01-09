@@ -24,8 +24,14 @@
 	"background": {
 		"persistent": true,
 		"scripts": [
+			"argon2-browser/dist/argon2.js",
+			"argon2-browser/dist/argon2.min.js",
+			"argon2-browser/dist/argon2-asm.min.js",
+			"argon2-browser/dist/argon2.wasm",
+			"argon2-browser/lib/argon2.js",
 			"crypto-js/core.js",
 			"crypto-js/x64-core.js",
+			"crypto-js/cipher-core.js",
 			"crypto-js/hmac.js",
 			"crypto-js/sha512.js",
 			"crypto-js/sha1.js",
@@ -33,6 +39,7 @@
 			"crypto-js/sha3.js",
 			"crypto-js/ripemd160.js",
 			"crypto-js/enc-base64.js",
+			"crypto-js/format-hex.js",
 			"sitepw.js",
 			"sitepw-extension.js"
 		]

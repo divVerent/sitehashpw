@@ -3,9 +3,13 @@
 <html>
 <head>
   <title>sitepw</title>
+  <script src="argon2-browser/lib/argon2.js" type="text/javascript">
+  </script>
   <script src="crypto-js/core.js" type="text/javascript">
   </script>
   <script src="crypto-js/x64-core.js" type="text/javascript">
+  </script>
+  <script src="crypto-js/cipher-core.js" type="text/javascript">
   </script>
   <script src="crypto-js/hmac.js" type="text/javascript">
   </script>
@@ -20,6 +24,8 @@
   <script src="crypto-js/ripemd160.js" type="text/javascript">
   </script>
   <script src="crypto-js/enc-base64.js" type="text/javascript">
+  </script>
+  <script src="crypto-js/format-hex.js" type="text/javascript">
   </script>
   <script src="sitepw.js" type="text/javascript">
   </script>
@@ -41,6 +47,7 @@
         <option name="HMAC-SHA-512">HMAC-SHA-512</option>
         <option name="HMAC-SHA-3">HMAC-SHA-3</option>
         <option name="HMAC-RIPEMD-160">HMAC-RIPEMD-160</option>
+        <option name="Argon2id-3x4M">Argon2id-3x4M</option>
       </select></dd>
 
       <dt>Length (saved):</dt>

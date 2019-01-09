@@ -2,3 +2,7 @@
 	path = crypto-js
 	url = https://github.com/brix/crypto-js
 	branch = master
+[submodule "argon2-browser"]
+	path = argon2-browser
+	url = https://github.com/antelle/argon2-browser
+	branch = master
