@@ -4,17 +4,22 @@
 
 let masterpw, site, generation, pw, method, len, showcommandlink;
 let q = Promise.resolve();
+
 function do_sitepw() {
   q = q.finally(() => {
     const sitename = getsitename(site.value);
-    return sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then((password) => {
+    const method_name = method.options[method.selectedIndex].value;
+    return sitepw(sitename, generation.value, methods[method_name].func,
+      len.value, masterpw.value).then((password) => {
       pw.value = password;
       if (document.activeElement == pw)
         pw.select();
     });
   });
 }
+
 let timed_sitepw_timer;
+
 function timed_sitepw() {
   if (timed_sitepw_timer != null)
     clearTimeout(timed_sitepw_timer);
@@ -29,18 +34,22 @@ function timed_sitepw() {
   }
   if (this == site) {
     const sitename = getsitename(site.value);
-    let generation_new = localStorage.getItem("generation." + sitename);
+    const generation_new = localStorage.getItem(
+      "generation." + sitename);
     if (generation_new == null || generation_new == "")
-      generation_new = "1";
-    generation.value = generation_new;
+      generation.value = "1";
+    else
+      generation.value = generation_new;
   }
   timed_sitepw_timer = setTimeout(do_sitepw, 300);
   return true;
 }
+
 function select_this() {
   this.select();
   return true;
 }
+
 function register_input_events(box) {
   if (box.type == "password" || box.type == "text")
     box.onclick = select_this;
@@ -49,6 +58,7 @@ function register_input_events(box) {
   box.onkeydown = timed_sitepw;
   box.onblur = timed_sitepw;
 }
+
 function init() {
   // Get objects.
   masterpw = document.getElementById("masterpw");
@@ -59,17 +69,20 @@ function init() {
   len = document.getElementById("len");
   showcommandlink = document.getElementById("showcommandlink");
 
-  document.getElementById("bookmarklet").href = "javascript:void(window.open(\"" + location.href + "#\"+location.href));";
+  document.getElementById("bookmarklet").href =
+    "javascript:void(window.open(\"" +
+    location.href + "#\"+location.href));";
 
   // Load stuff.
   if (localStorage.getItem("len") != "")
     len.value = localStorage.getItem("len");
   if (localStorage.getItem("method") != "")
     for (let i = 0; i < method.options.length; ++i)
-      if (method.options[i].value == localStorage.getItem("method"))
+      if (method.options[i].value ==
+        localStorage.getItem("method"))
         method.selectedIndex = i;
 
-  // Fill in queried URL.
+      // Fill in queried URL.
   if (location.hash.length > 1)
     site.value = location.hash.substr(1);
   else if (document.referrer != "")
