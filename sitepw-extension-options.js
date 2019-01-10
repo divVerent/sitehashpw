@@ -1,4 +1,4 @@
-var masterpw, oldmasterpw, generation, method, len, overrides, overrides_add, overrides_delete, overrides_edit, overrides_password, overrides_mark_as_old, overrides_mark_as_current;
+var masterpw, oldmasterpw, generation, method, len, overrides, overrides_add, overrides_delete, overrides_edit, overrides_password, overrides_mark_as_old, overrides_mark_as_current, showcommandlink;
 var settings = {};
 
 function serialize(sitename, override, force) {
@@ -166,6 +166,7 @@ function init2(settings_) {
 	overrides_delete.onclick = delete_override;
 	overrides_mark_as_old.onclick = mark_as_old;
 	overrides_mark_as_current.onclick = mark_as_current;
+	showcommandlink.onclick = show_command;
 }
 function init() {
 	// Get objects.
@@ -181,12 +182,14 @@ function init() {
 	overrides_delete = document.getElementById("overrides_delete");
 	overrides_mark_as_old = document.getElementById("overrides_mark_as_old");
 	overrides_mark_as_current = document.getElementById("overrides_mark_as_current");
+	showcommandlink = document.getElementById("showcommandlink");
 
 	// Get settings.
 	chrome.runtime.sendMessage({"sitepw_get_settings": ["masterpw", "oldmasterpw", "generation", "method", "len", "overrides", "last_site"]}, init2);
 }
 
 function show_command() {
+	console.log(methods[method.options[method.selectedIndex].value].command);
 	alert(methods[method.options[method.selectedIndex].value].command);
 }
 

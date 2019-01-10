@@ -1,12 +1,12 @@
 #!/bin/sh
 
 sh LICENSE > LICENSE.html
+rm -f extension.zip
 zip -9r extension.zip \
 	manifest.json \
 	argon2-browser/dist/argon2-asm.min.js \
-	*.js \
-	*.css \
-	*.html \
+	sitepw.js \
+	sitepw-extension* \
 	LICENSE \
 	LICENSE.html \
 	argon2-browser/argon2/LICENSE \

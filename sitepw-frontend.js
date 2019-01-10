@@ -2,7 +2,7 @@
  * @fileoverview Description of this file.
  */
 
-var masterpw, site, generation, pw, method, len;
+var masterpw, site, generation, pw, method, len, showcommandlink;
 var generation_dirty;
 var q = Promise.resolve();
 function do_sitepw() {
@@ -58,6 +58,7 @@ function init() {
   pw = document.getElementById("pw");
   method = document.getElementById("method");
   len = document.getElementById("len");
+  showcommandlink = document.getElementById("showcommandlink");
 
   document.getElementById("bookmarklet").href = "javascript:void(window.open(\"" + location.href + "#\"+location.href));";
 
@@ -87,8 +88,10 @@ function init() {
   register_input_events(pw);
   register_input_events(len);
   register_input_events(method);
+  showcommandlink.onclick = show_command;
 }
 
 function show_command() {
+  console.log(methods[method.options[method.selectedIndex].value].command);
   alert(methods[method.options[method.selectedIndex].value].command);
 }
