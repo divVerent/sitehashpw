@@ -21,11 +21,11 @@ function set_value(e, password) {
 }
 
 function set_password(password) {
-	var elements = [document.activeElement];
+	let elements = [document.activeElement];
 	if (!is_viable(elements[0])) {
 		elements = get_all_password_elements();
 	}
-	for (var i = 0; i < elements.length; ++i) {
+	for (let i = 0; i < elements.length; ++i) {
 		set_value(elements[i], password);
 	}
 	if (elements.length == 0)

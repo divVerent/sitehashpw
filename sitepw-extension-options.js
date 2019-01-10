@@ -1,8 +1,8 @@
-var masterpw, oldmasterpw, generation, method, len, overrides, overrides_add, overrides_delete, overrides_edit, overrides_password, overrides_mark_as_old, overrides_mark_as_current, showcommandlink;
-var settings = {};
+let masterpw, oldmasterpw, generation, method, len, overrides, overrides_add, overrides_delete, overrides_edit, overrides_password, overrides_mark_as_old, overrides_mark_as_current, showcommandlink;
+let settings = {};
 
 function serialize(sitename, override, force) {
-	var text = "";
+	let text = "";
 	if (override.alias != sitename || force)
 		text += " alias=" + override.alias;
 	if (override.generation != settings.generation || force)
@@ -20,10 +20,10 @@ function serialize(sitename, override, force) {
 }
 
 function parse(sitename, override_str) {
-	var obj = {"len": settings.len, "method": settings.method, "generation": settings.generation, "alias": sitename, "use_old_password": false};
-	var items = override_str.split(" ");
-	for (var i = 0; i < items.length; ++i) {
-		var item = items[i];
+	let obj = {"len": settings.len, "method": settings.method, "generation": settings.generation, "alias": sitename, "use_old_password": false};
+	const items = override_str.split(" ");
+	for (let i = 0; i < items.length; ++i) {
+		let item = items[i];
 		if (item.substr(0, 4) == "len=")
 			obj.len = item.substr(4);
 		if (item.substr(0, 7) == "method=")
@@ -43,19 +43,19 @@ function repopulate_overrides_list(selected) {
 		if (overrides.selectedIndex >= 0)
 			selected = overrides.options[overrides.selectedIndex].value;
 	overrides_list = [];
-	for (var o in settings.overrides) {
+	for (let o in settings.overrides) {
 		overrides_list.push(o);
 	}
 	overrides_list.sort();
 	while (overrides.hasChildNodes())
 		overrides.removeChild(overrides.lastChild);
-	for (var i = 0; i < overrides_list.length; ++i) {
-		var sitename = overrides_list[i];
-		var override = settings.overrides[sitename];
-		var opt = document.createElement("option");
+	for (let i = 0; i < overrides_list.length; ++i) {
+		const sitename = overrides_list[i];
+		const override = settings.overrides[sitename];
+		const opt = document.createElement("option");
 		opt.value = sitename;
-		var text = sitename + ": " + serialize(sitename, override, false);
-		var txt = document.createTextNode(text);
+		const text = sitename + ": " + serialize(sitename, override, false);
+		const txt = document.createTextNode(text);
 		opt.appendChild(txt);
 		if (selected == sitename)
 			opt.selected = true;
@@ -87,7 +87,7 @@ function register_input_events(box) {
 	box.onblur = save;
 }
 function add_override() {
-	var sitename = prompt("Site name:");
+	let sitename = prompt("Site name:");
 	sitename = getsitename(sitename);
 	settings.overrides[sitename] = {"len": settings.len, "method": settings.method, "generation": settings.generation, "alias": sitename};
 	save();
@@ -97,8 +97,8 @@ function add_override() {
 function edit_override() {
 	if (overrides.selectedIndex < 0)
 		return;
-	var sitename = overrides.options[overrides.selectedIndex].value;
-	var str = serialize(sitename, settings.overrides[sitename], true);
+	const sitename = overrides.options[overrides.selectedIndex].value;
+	let str = serialize(sitename, settings.overrides[sitename], true);
 	str = prompt("Overrides for " + sitename + ":", str);
 	settings.overrides[sitename] = parse(sitename, str);
 	save();
@@ -106,7 +106,7 @@ function edit_override() {
 function show_override_password() {
 	if (overrides.selectedIndex < 0)
 		return;
-	var sitename = overrides.options[overrides.selectedIndex].value;
+	const sitename = overrides.options[overrides.selectedIndex].value;
 	chrome.runtime.sendMessage({"sitepw_get_password": sitename}, (pw) => {
 		alert(pw);
 	});
@@ -114,29 +114,29 @@ function show_override_password() {
 function delete_override() {
 	if (overrides.selectedIndex < 0)
 		return;
-	var sitename = overrides.options[overrides.selectedIndex].value;
+	const sitename = overrides.options[overrides.selectedIndex].value;
 	delete settings.overrides[sitename];
 	save();
 }
 function mark_as_old() {
-	for (var k in settings.overrides) {
+	for (let k in settings.overrides) {
 		if (settings.overrides[k].use_old_password == true) {
 			alert(k + " still uses the previous old password. Cannot proceed.");
 			return;
 		}
 	}
-	for (var k in settings.overrides)
+	for (let k in settings.overrides)
 		settings.overrides[k].use_old_password = true;
 	save();
 }
 function mark_as_current() {
-	for (var k in settings.overrides) {
+	for (let k in settings.overrides) {
 		if (settings.overrides[k].use_old_password == false) {
 			alert(k + " already uses the current password. Cannot proceed.");
 			return;
 		}
 	}
-	for (var k in settings.overrides)
+	for (let k in settings.overrides)
 		settings.overrides[k].use_old_password = false;
 	save();
 }
@@ -149,7 +149,7 @@ function init2(settings_) {
 	generation.value = settings.generation;
 	len.value = settings.len;
 	if (settings.method != "")
-		for (var i = 0; i < method.options.length; ++i)
+		for (let i = 0; i < method.options.length; ++i)
 			if (method.options[i].value == settings.method)
 				method.selectedIndex = i;
 	repopulate_overrides_list(settings.last_site);

@@ -2,12 +2,11 @@
  * @fileoverview Description of this file.
  */
 
-var masterpw, site, generation, pw, method, len, showcommandlink;
-var generation_dirty;
-var q = Promise.resolve();
+let masterpw, site, generation, pw, method, len, showcommandlink;
+let q = Promise.resolve();
 function do_sitepw() {
   q = q.finally(() => {
-    var sitename = getsitename(site.value);
+    const sitename = getsitename(site.value);
     return sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then((password) => {
       pw.value = password;
       if (document.activeElement == pw)
@@ -15,22 +14,22 @@ function do_sitepw() {
     });
   });
 }
-var timed_sitepw_timer;
+let timed_sitepw_timer;
 function timed_sitepw() {
   if (timed_sitepw_timer != null)
     clearTimeout(timed_sitepw_timer);
   localStorage.setItem("len", len.value);
   localStorage.setItem("method", method.options[method.selectedIndex].value);
   if (this == generation) {
-    var sitename = getsitename(site.value);
+    const sitename = getsitename(site.value);
     if (generation.value == "1")
       localStorage.removeItem("generation." + sitename);
     else
       localStorage.setItem("generation." + sitename, generation.value);
   }
   if (this == site) {
-    var sitename = getsitename(site.value);
-    var generation_new = localStorage.getItem("generation." + sitename);
+    const sitename = getsitename(site.value);
+    let generation_new = localStorage.getItem("generation." + sitename);
     if (generation_new == null || generation_new == "")
       generation_new = "1";
     generation.value = generation_new;
@@ -66,7 +65,7 @@ function init() {
   if (localStorage.getItem("len") != "")
     len.value = localStorage.getItem("len");
   if (localStorage.getItem("method") != "")
-    for (var i = 0; i < method.options.length; ++i)
+    for (let i = 0; i < method.options.length; ++i)
       if (method.options[i].value == localStorage.getItem("method"))
         method.selectedIndex = i;
 
