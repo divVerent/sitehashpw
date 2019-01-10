@@ -50,7 +50,7 @@ function repopulate_overrides_list(selected) {
     if (overrides.selectedIndex >= 0)
       selected = overrides.options[overrides.selectedIndex].value;
   overrides_list = [];
-  for (const o of settings.overrides) {
+  for (const o of Object.keys(settings.overrides)) {
     overrides_list.push(o);
   }
   overrides_list.sort();
@@ -140,25 +140,25 @@ function delete_override() {
 }
 
 function mark_as_old() {
-  for (const [k, override] of settings.overrides.entries()) {
+  for (const [k, override] of Object.entries(settings.overrides)) {
     if (override.use_old_password == true) {
       alert(k + " still uses the previous old password. Cannot proceed.");
       return;
     }
   }
-  for (const override of settings.overrides)
+  for (const override of Object.values(settings.overrides))
     override.use_old_password = true;
   save();
 }
 
 function mark_as_current() {
-  for (const [k, override] of settings.overrides.entries()) {
+  for (const [k, override] of Object.entries(settings.overrides)) {
     if (override.use_old_password == false) {
       alert(k + " already uses the current password. Cannot proceed.");
       return;
     }
   }
-  for (const override of settings.overrides)
+  for (const override of Object.values(settings.overrides))
     override.use_old_password = false;
   save();
 }
