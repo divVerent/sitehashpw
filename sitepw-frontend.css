@@ -1,6 +1,6 @@
 body {
   font-family: monospace;
-  font-size: 16pt;
+  font-size: 12pt;
   color: #fff;
   background-color: #040;
 }
@@ -24,7 +24,7 @@ dd {
   margin-bottom: 2em;
 }
 input, select, option {
-  font-size: 2em;
+  font-size: 24pt;
   width: 100%;
   text-align: center;
   color: #8f8;
@@ -33,7 +33,7 @@ input, select, option {
   font-family: monospace;
 }
 #overrides {
-  font-size: 0.6em;
+  font-size: 12pt;
 }
 #overrides option {
   text-align: left;
