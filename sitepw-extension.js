@@ -110,9 +110,9 @@ function get_sitepw(url, allow_write) {
 }
 var q = Promise.resolve();
 function do_sitepw(tab) {
-	q = q.finally(function() {
-		return get_sitepw(tab.url, true).then(function(password) {
-			chrome.tabs.executeScript(tab.id, {"file": "sitepw-extension-contentscript.js"}, function(fieldnames) {
+	q = q.finally(() => {
+		return get_sitepw(tab.url, true).then((password) => {
+			chrome.tabs.executeScript(tab.id, {"file": "sitepw-extension-contentscript.js"}, (fieldnames) => {
 				var message = {};
 				for (i = 0; i < fieldnames.length; ++i)
 					message[fieldnames[i]] = password;
@@ -123,13 +123,13 @@ function do_sitepw(tab) {
 }
 
 function init() {
-	chrome.storage.sync.get(["method", "len", "overrides", "generation"], function(new_settings) {
+	chrome.storage.sync.get(["method", "len", "overrides", "generation"], (new_settings) => {
 		update_settings(new_settings);
-		chrome.storage.local.get(["masterpw"], function(new_settings) {
+		chrome.storage.local.get(["masterpw"], (new_settings) => {
 			update_settings(new_settings);
 			chrome.browserAction.onClicked.addListener(do_sitepw);
 			chrome.runtime.onMessage.addListener(
-				function(request, sender, sendResponse) {
+				(request, sender, sendResponse) => {
 					if (request.sitepw_get_settings != null) {
 						var out = {};
 						for (var i = 0; i < request.sitepw_get_settings.length; ++i) {

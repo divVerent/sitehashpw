@@ -6,9 +6,9 @@ var masterpw, site, generation, pw, method, len, showcommandlink;
 var generation_dirty;
 var q = Promise.resolve();
 function do_sitepw() {
-  q = q.finally(function() {
+  q = q.finally(() => {
     var sitename = getsitename(site.value);
-    return sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then(function(password) {
+    return sitepw(sitename, generation.value, methods[method.options[method.selectedIndex].value].func, len.value, masterpw.value).then((password) => {
       pw.value = password;
       if (document.activeElement == pw)
         pw.select();
@@ -35,7 +35,7 @@ function timed_sitepw() {
       generation_new = "1";
     generation.value = generation_new;
   }
-  timed_sitepw_timer = setTimeout(function() { do_sitepw(); }, 300);
+  timed_sitepw_timer = setTimeout(do_sitepw, 300);
   return true;
 }
 function select_this() {

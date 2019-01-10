@@ -69,7 +69,7 @@ function save() {
 	settings.generation = generation.value;
 	settings.len = len.value;
 	settings.method = method.options[method.selectedIndex].value;
-	chrome.runtime.sendMessage({"sitepw_update_settings": settings}, function() {
+	chrome.runtime.sendMessage({"sitepw_update_settings": settings}, () => {
 		repopulate_overrides_list(null);
 	});
 	return true;
@@ -107,7 +107,7 @@ function show_override_password() {
 	if (overrides.selectedIndex < 0)
 		return;
 	var sitename = overrides.options[overrides.selectedIndex].value;
-	chrome.runtime.sendMessage({"sitepw_get_password": sitename}, function(pw) {
+	chrome.runtime.sendMessage({"sitepw_get_password": sitename}, (pw) => {
 		alert(pw);
 	});
 }
