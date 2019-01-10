@@ -1,0 +1,54 @@
+{
+  "update_url": "https://clients2.google.com/service/update2/crx",
+
+  "manifest_version": 2,
+  "name": "SitePW",
+  "version": "1.2.`git log --oneline | wc -l`",
+  "version_name": "`git describe --always --dirty`",
+
+  "description": "A hash based password manager that generates unique passwords per website.",
+  "icons": {
+    "16": "",
+    "48": "",
+    "128": "",
+  },
+
+  "browser_action": {
+    "default_title": "SitePW"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Ctrl+Shift+S"
+      }
+    }
+  },
+
+  "background": {
+    "persistent": true,
+    "scripts": [
+      "argon2-browser/lib/argon2.js",
+      "crypto-js/core.js",
+      "crypto-js/x64-core.js",
+      "crypto-js/cipher-core.js",
+      "crypto-js/hmac.js",
+      "crypto-js/sha256.js",
+      "crypto-js/enc-base64.js",
+      "crypto-js/format-hex.js",
+      "sitepw.js",
+      "sitepw-extension.js"
+    ]
+  },
+
+  "homepage_url": "https://github.com/divVerent/sitepw/",
+
+  "incognito": "spanning",
+
+  "options_page": "sitepw-extension-options.html",
+
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+}
