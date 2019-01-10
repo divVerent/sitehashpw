@@ -36,7 +36,7 @@ function timed_sitepw() {
     const sitename = getsitename(site.value);
     const generation_new = localStorage.getItem(
       "generation." + sitename);
-    if (generation_new == null || generation_new == "")
+    if (generation_new == null)
       generation.value = "1";
     else
       generation.value = generation_new;
