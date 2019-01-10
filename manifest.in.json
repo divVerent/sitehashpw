@@ -5,11 +5,6 @@
   "version_name": "`git describe --always --dirty`",
 
   "description": "A hash based password manager that generates unique passwords per website.",
-  "icons": {
-    "16": "",
-    "48": "",
-    "128": ""
-  },
 
   "browser_action": {
     "default_title": "SitePW"
