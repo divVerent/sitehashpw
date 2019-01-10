@@ -26,8 +26,8 @@ function set_password(password) {
     elements = get_all_password_elements();
   }
 
-  for (let i = 0; i < elements.length; ++i) {
-    set_value(elements[i], password);
+  for (const element of elements) {
+    set_value(element, password);
   }
   if (elements.length == 0)
     alert(password);
@@ -40,4 +40,5 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+// fieldnames =
 "sitepw_password";

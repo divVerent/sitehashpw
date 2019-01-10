@@ -44,8 +44,8 @@ function set_setting(s, v) {
 }
 
 function update_settings(e) {
-  for (let key in e)
-    set_setting(key, e[key]);
+  for (const [key, value] of Object.entries(e))
+    set_setting(key, value);
   if ("overrides" in e)
     set_setting("overrides", fix_overrides(get_setting("overrides")));
 }
@@ -67,22 +67,15 @@ function get_default_settings(sitename) {
 
 function fix_override(sitename, override) {
   const site_settings = get_default_settings(sitename);
-  let need_write = false;
   if (override == null) {
     override = {};
-    need_write = true;
   }
-  for (let k in site_settings) {
-    if (override[k] == null) {
-      need_write = true;
-    } else {
+  for (const k of Object.keys(site_settings)) {
+    if (k in override) {
       site_settings[k] = override[k];
     }
   }
-  if (need_write)
-    return site_settings;
-  else
-    return null;
+  return site_settings;
 }
 
 function get_site_settings(sitename, allow_write) {
@@ -98,13 +91,8 @@ function get_site_settings(sitename, allow_write) {
 
 function fix_overrides(v) {
   const out = {};
-  for (let k in v) {
-    const override = v[k];
-    const site_settings = fix_override(k, override);
-    if (site_settings == null)
-      out[k] = override;
-    else
-      out[k] = site_settings;
+  for (const [k, override] of Object.entries(v)) {
+    out[k] = fix_override(k, override)
   }
   return out;
 }
@@ -144,7 +132,7 @@ function do_sitepw(tab) {
         "file": "sitepw-extension-contentscript.js"
       }, (fieldnames) => {
         const message = {};
-        for (i = 0; i < fieldnames.length; ++i)
+        for (const fieldname of fieldnames)
           message[fieldnames[i]] = password;
         chrome.tabs.sendMessage(tab.id, message);
       });
@@ -163,10 +151,8 @@ function init() {
         (request, sender, sendResponse) => {
           if (request.sitepw_get_settings != null) {
             const out = {};
-            for (let i = 0; i < request.sitepw_get_settings.length; ++
-              i) {
-              out[request.sitepw_get_settings[i]] = get_setting(
-                request.sitepw_get_settings[i]);
+            for (const setting of Object.keys(request.sitepw_get_settings)) {
+              out[setting] = get_setting(setting);
             }
             sendResponse(out);
           }
