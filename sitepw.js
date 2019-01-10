@@ -27,25 +27,9 @@ function argon2i_func(time, memp) {
 }
 
 const methods = {
-  "HMAC-SHA-1": {
-    func: hmac_func(CryptoJS.HmacSHA1),
-    command: "echo \"$site\" | openssl sha1 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
-  },
   "HMAC-SHA-256": {
     func: hmac_func(CryptoJS.HmacSHA256),
     command: "echo \"$site\" | openssl sha256 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
-  },
-  "HMAC-SHA-512": {
-    func: hmac_func(CryptoJS.HmacSHA512),
-    command: "echo \"$site\" | openssl sha512 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
-  },
-  "HMAC-SHA-3": {
-    func: hmac_func(CryptoJS.HmacSHA3),
-    command: "echo \"$site\" | openssl sha3 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
-  },
-  "HMAC-RIPEMD-160": {
-    func: hmac_func(CryptoJS.HmacRIPEMD160),
-    command: "echo \"$site\" | openssl rmd160 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
   },
   "Argon2id-1Mx16": {
     func: argon2i_func(16, 10),

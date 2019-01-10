@@ -1,5 +1,5 @@
 const settings_sync = {
-  "method": "HMAC-SHA-256",
+  "method": "Argon2id-16Mx1",
   "len": 12,
   "overrides": {},
   "generation": 1
