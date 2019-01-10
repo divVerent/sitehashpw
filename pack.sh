@@ -7,6 +7,7 @@ zip -9r extension.zip \
 	argon2-browser/dist/argon2-asm.min.js \
 	sitepw.js \
 	sitepw-extension* \
+	sitepw-frontend.css \
 	LICENSE \
 	LICENSE.html \
 	argon2-browser/argon2/LICENSE \
