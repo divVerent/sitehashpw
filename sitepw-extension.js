@@ -8,6 +8,10 @@ const settings_local = {
   "masterpw": "",
   "oldmasterpw": ""
 };
+
+// Note: the background script has to be persistent for these settings
+// to survive across multiple invocations. Very useful for the case of not
+// storing the master password on disk.
 const settings_nosave = {
   "last_site": "",
   "masterpw_temp": "",
@@ -151,7 +155,7 @@ function init() {
         (request, sender, sendResponse) => {
           if (request.sitepw_get_settings != null) {
             const out = {};
-            for (const setting of Object.keys(request.sitepw_get_settings)) {
+            for (const setting of request.sitepw_get_settings) {
               out[setting] = get_setting(setting);
             }
             sendResponse(out);

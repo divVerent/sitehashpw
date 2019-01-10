@@ -1,6 +1,12 @@
 #!/bin/sh
 
+set -ex
 sh LICENSE > LICENSE.html
+sh <<EEOF > manifest.json
+cat <<EOF
+`cat manifest.in.json`
+EOF
+EEOF
 rm -f extension.zip
 zip -9r extension.zip \
 	manifest.json \
