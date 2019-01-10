@@ -85,7 +85,7 @@ function fix_override(sitename, override) {
 function get_site_settings(sitename, allow_write) {
   let site_settings = get_setting("overrides")[sitename];
   if (site_settings == null) {
-    site_settings = = get_default_settings(sitename);
+    site_settings = get_default_settings(sitename);
     if (allow_write) {
       get_setting("overrides")[sitename] = site_settings;
     }
