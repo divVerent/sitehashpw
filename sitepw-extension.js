@@ -137,8 +137,12 @@ function do_sitepw(tab) {
       }, (fieldnames) => {
         const message = {};
         for (const fieldname of fieldnames)
-          message[fieldnames[i]] = password;
-        chrome.tabs.sendMessage(tab.id, message);
+          message[fieldname] = password;
+        chrome.tabs.sendMessage(tab.id, message, (response) => {
+          if (!response.sitepw_status) {
+            alert('Failed to insert password.');
+          }
+        });
       });
     });
   });
