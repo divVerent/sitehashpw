@@ -33,7 +33,7 @@ function set_password(password) {
 }
 
 chrome.runtime.onMessage.addListener(
-	function(request, sender, sendResponse) {
+	(request, sender, sendResponse) => {
 		if (request.sitepw_password != null)
 			set_password(request.sitepw_password);
 	}
