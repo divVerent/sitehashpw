@@ -1,8 +1,8 @@
 /**
  * @fileoverview Description of this file.
  */
-var ARGON2_PEPPER = "3.243F6A8885A308D313198A2E03707344A4093822299F31D0082EFA98EC4E6C";  // Pi in hex.
-var methods = {
+const ARGON2_PEPPER = "3.243F6A8885A308D313198A2E03707344A4093822299F31D0082EFA98EC4E6C";  // Pi in hex.
+const methods = {
 	"HMAC-SHA-1": { func: (site, masterpw, generation, len) => { return Promise.resolve(CryptoJS.HmacSHA1(site + "\n", masterpw + "#" + generation).toString(CryptoJS.enc.Base64)); }, command: "echo \"$site\" | openssl sha1 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len" },
 	"HMAC-SHA-256": { func: (site, masterpw, generation, len) => { return Promise.resolve(CryptoJS.HmacSHA256(site + "\n", masterpw + "#" + generation).toString(CryptoJS.enc.Base64)); }, command: "echo \"$site\" | openssl sha256 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len" },
 	"HMAC-SHA-512": { func: (site, masterpw, generation, len) => { return Promise.resolve(CryptoJS.HmacSHA512(site + "\n", masterpw + "#" + generation).toString(CryptoJS.enc.Base64)); }, command: "echo \"$site\" | openssl sha512 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len" },
@@ -17,13 +17,13 @@ function getsitename(site) {
 	// TODO(rpolzer) .co.uk etc. handling
 	site = site.toLowerCase();
 	if (site.indexOf("/") >= 0) {
-		var parser = document.createElement('a');
+		const parser = document.createElement('a');
 		parser.href = site;
 		if (parser.hostname)
 			site = parser.hostname;
 	}
-	var pattern = /[^.]*\.[^.]*$/;
-	var match = pattern.exec(site);
+	const pattern = /[^.]*\.[^.]*$/;
+	const match = pattern.exec(site);
 	if (match)
 		site = match[0];
 	return site;
