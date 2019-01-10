@@ -30,8 +30,7 @@ function parse(sitename, override_str) {
     "use_old_password": false
   };
   const items = override_str.split(" ");
-  for (let i = 0; i < items.length; ++i) {
-    const item = items[i];
+  for (const item of items) {
     if (item.substr(0, 4) == "len=")
       obj.len = item.substr(4);
     if (item.substr(0, 7) == "method=")
@@ -51,14 +50,13 @@ function repopulate_overrides_list(selected) {
     if (overrides.selectedIndex >= 0)
       selected = overrides.options[overrides.selectedIndex].value;
   overrides_list = [];
-  for (let o in settings.overrides) {
+  for (const o of settings.overrides) {
     overrides_list.push(o);
   }
   overrides_list.sort();
   while (overrides.hasChildNodes())
     overrides.removeChild(overrides.lastChild);
-  for (let i = 0; i < overrides_list.length; ++i) {
-    const sitename = overrides_list[i];
+  for (const sitename of overrides_list) {
     const override = settings.overrides[sitename];
     const opt = document.createElement("option");
     opt.value = sitename;
@@ -100,7 +98,7 @@ function register_input_events(box) {
 }
 
 function add_override() {
-  let sitename = getsitename(prompt("Site name:"));
+  const sitename = getsitename(prompt("Site name:"));
   settings.overrides[sitename] = {
     "len": settings.len,
     "method": settings.method,
@@ -142,26 +140,26 @@ function delete_override() {
 }
 
 function mark_as_old() {
-  for (let k in settings.overrides) {
-    if (settings.overrides[k].use_old_password == true) {
+  for (const [k, override] of settings.overrides.entries()) {
+    if (override.use_old_password == true) {
       alert(k + " still uses the previous old password. Cannot proceed.");
       return;
     }
   }
-  for (let k in settings.overrides)
-    settings.overrides[k].use_old_password = true;
+  for (const override of settings.overrides)
+    override.use_old_password = true;
   save();
 }
 
 function mark_as_current() {
-  for (let k in settings.overrides) {
-    if (settings.overrides[k].use_old_password == false) {
+  for (const [k, override] of settings.overrides.entries()) {
+    if (override.use_old_password == false) {
       alert(k + " already uses the current password. Cannot proceed.");
       return;
     }
   }
-  for (let k in settings.overrides)
-    settings.overrides[k].use_old_password = false;
+  for (const override of settings.overrides)
+    override.use_old_password = false;
   save();
 }
 
