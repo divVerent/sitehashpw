@@ -31,6 +31,7 @@
   "background": {
     "persistent": true,
     "scripts": [
+      "module-defs.js",
       "argon2-browser/lib/argon2.js",
       "crypto-js/core.js",
       "crypto-js/x64-core.js",
