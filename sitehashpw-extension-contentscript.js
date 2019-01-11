@@ -26,12 +26,12 @@ function set_password(password) {
 
 chrome.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
-    if (request.sitepw_password != null)
+    if (request.sitehashpw_password != null)
       sendResponse({
-        "sitepw_status": set_password(request.sitepw_password)
+        "sitehashpw_status": set_password(request.sitehashpw_password)
       });
   }
 );
 
 // fieldnames =
-"sitepw_password";
+"sitehashpw_password";

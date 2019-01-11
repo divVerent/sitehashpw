@@ -5,11 +5,11 @@
 let masterpw, site, generation, pw, method, len, showcommandlink;
 let q = Promise.resolve();
 
-function do_sitepw() {
+function do_sitehashpw() {
   q = q.finally(() => {
     const sitename = getsitename(site.value);
     const method_name = method.options[method.selectedIndex].value;
-    return sitepw(sitename, generation.value, methods[method_name].func,
+    return sitehashpw(sitename, generation.value, methods[method_name].func,
       len.value, masterpw.value).then((password) => {
       pw.value = password;
       if (document.activeElement == pw)
@@ -18,11 +18,11 @@ function do_sitepw() {
   });
 }
 
-let timed_sitepw_timer;
+let timed_sitehashpw_timer;
 
-function timed_sitepw() {
-  if (timed_sitepw_timer != null)
-    clearTimeout(timed_sitepw_timer);
+function timed_sitehashpw() {
+  if (timed_sitehashpw_timer != null)
+    clearTimeout(timed_sitehashpw_timer);
   localStorage.setItem("len", len.value);
   localStorage.setItem("method", method.options[method.selectedIndex].value);
   if (this == generation) {
@@ -41,7 +41,7 @@ function timed_sitepw() {
     else
       generation.value = generation_new;
   }
-  timed_sitepw_timer = setTimeout(do_sitepw, 300);
+  timed_sitehashpw_timer = setTimeout(do_sitehashpw, 300);
   return true;
 }
 
@@ -53,10 +53,10 @@ function select_this() {
 function register_input_events(box) {
   if (box.type == "password" || box.type == "text")
     box.onclick = select_this;
-  box.onchange = timed_sitepw;
-  box.onkeyup = timed_sitepw;
-  box.onkeydown = timed_sitepw;
-  box.onblur = timed_sitepw;
+  box.onchange = timed_sitehashpw;
+  box.onkeyup = timed_sitehashpw;
+  box.onkeydown = timed_sitehashpw;
+  box.onblur = timed_sitehashpw;
 }
 
 function init() {
@@ -87,7 +87,7 @@ function init() {
     site.value = location.hash.substr(1);
   else if (document.referrer != "")
     site.value = document.referrer;
-  do_sitepw(site.form);
+  do_sitehashpw(site.form);
 
   // Ask for master password.
   if (masterpw.value == "")

@@ -76,7 +76,7 @@ function save() {
   settings.len = len.value;
   settings.method = method.options[method.selectedIndex].value;
   chrome.runtime.sendMessage({
-    "sitepw_update_settings": settings
+    "sitehashpw_update_settings": settings
   }, () => {
     repopulate_overrides_list(null);
   });
@@ -125,7 +125,7 @@ function show_override_password() {
     return;
   const sitename = overrides.options[overrides.selectedIndex].value;
   chrome.runtime.sendMessage({
-    "sitepw_get_password": sitename
+    "sitehashpw_get_password": sitename
   }, (pw) => {
     alert(pw);
   });
@@ -210,7 +210,7 @@ function init() {
 
   // Get settings.
   chrome.runtime.sendMessage({
-    "sitepw_get_settings": ["masterpw", "oldmasterpw", "generation",
+    "sitehashpw_get_settings": ["masterpw", "oldmasterpw", "generation",
       "method",
       "len", "overrides", "last_site"
     ]

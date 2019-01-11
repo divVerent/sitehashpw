@@ -99,7 +99,7 @@ function fix_overrides(v) {
   return out;
 }
 
-function get_sitepw(url) {
+function get_sitehashpw(url) {
   const sitename = getsitename(url);
   set_setting("last_site", sitename);
   const site_settings = get_site_settings(sitename);
@@ -120,23 +120,23 @@ function get_sitepw(url) {
     }
   }
 
-  return sitepw(site_settings.alias, site_settings.generation, method.func,
+  return sitehashpw(site_settings.alias, site_settings.generation, method.func,
     site_settings.len, pw);
 }
 
 let q = Promise.resolve();
 
-function do_sitepw(tab) {
+function do_sitehashpw(tab) {
   q = q.finally(() => {
-    return get_sitepw(tab.url, true).then((password) => {
+    return get_sitehashpw(tab.url, true).then((password) => {
       chrome.tabs.executeScript(tab.id, {
-        "file": "sitepw-extension-contentscript.js"
+        "file": "sitehashpw-extension-contentscript.js"
       }, (fieldnames) => {
         const message = {};
         for (const fieldname of fieldnames)
           message[fieldname] = password;
         chrome.tabs.sendMessage(tab.id, message, (response) => {
-          if (!response.sitepw_status) {
+          if (!response.sitehashpw_status) {
             alert('Failed to insert password.');
           }
         });
@@ -151,23 +151,23 @@ function init() {
     update_settings(new_settings);
     chrome.storage.local.get(["masterpw"], (new_settings) => {
       update_settings(new_settings);
-      chrome.browserAction.onClicked.addListener(do_sitepw);
+      chrome.browserAction.onClicked.addListener(do_sitehashpw);
       chrome.runtime.onMessage.addListener(
         (request, sender, sendResponse) => {
-          if (request.sitepw_get_settings != null) {
+          if (request.sitehashpw_get_settings != null) {
             const out = {};
-            for (const setting of request.sitepw_get_settings) {
+            for (const setting of request.sitehashpw_get_settings) {
               out[setting] = get_setting(setting);
             }
             sendResponse(out);
           }
-          if (request.sitepw_get_password != null) {
-            get_sitepw(request.sitepw_get_password).then(
+          if (request.sitehashpw_get_password != null) {
+            get_sitehashpw(request.sitehashpw_get_password).then(
               sendResponse);
             return true; // We'll sendResponse asynchronously.
           }
-          if (request.sitepw_update_settings != null) {
-            update_settings(request.sitepw_update_settings);
+          if (request.sitehashpw_update_settings != null) {
+            update_settings(request.sitehashpw_update_settings);
             save_settings();
             sendResponse(null);
           }

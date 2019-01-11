@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.2.0">
-  <title>sitepw</title>
+  <title>SiteHashPW Web</title>
   <script src="argon2-browser/lib/argon2.js" type="text/javascript">
   </script>
   <script src="crypto-js/core.js" type="text/javascript">
@@ -19,11 +19,11 @@
   </script>
   <script src="crypto-js/format-hex.js" type="text/javascript">
   </script>
-  <script src="sitepw.js" type="text/javascript">
+  <script src="sitehashpw.js" type="text/javascript">
   </script>
-  <script src="sitepw-frontend.js" type="text/javascript">
+  <script src="sitehashpw-frontend.js" type="text/javascript">
   </script>
-  <link rel="stylesheet" href="sitepw-frontend.css" type="text/css">
+  <link rel="stylesheet" href="sitehashpw-frontend.css" type="text/css">
 </head>
 <body onload="init(); return true;">
   <form onsubmit="return false;">
@@ -53,9 +53,13 @@
       <dd><input type="text" autocapitalize="off" id="site" size="30" tabindex="3"></dd>
       <dt>Generation (saved per URL):</dt>
       <dd><input type="text" autocapitalize="off" id="generation" size="2" value="1" tabindex="6"></dd>
-      <dt>SitePW:</dt>
+      <dt>SiteHashPW:</dt>
       <dd><input type="text" id="pw" size="30" tabindex="8"></dd>
     </dl>
   </form>
+  <hr>
+  <p><a href="https://github.com/divVerent/sitehashpw/">Source code</a><br>
+  <a href="LICENSE.html">Copyright and license information</a><br>
+  <a href="https://gist.github.com/divVerent/0356f9abdfcabc61f7ad6302ed554383">Privacy policy</a></p>
 </body>
 </html>

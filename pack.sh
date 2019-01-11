@@ -19,9 +19,9 @@ zip -9r extension.zip \
 	manifest.json \
 	argon2-browser/dist/argon2-asm.min.js \
 	icon-*.png \
-	sitepw.js \
-	sitepw-extension* \
-	sitepw-frontend.css \
+	sitehashpw.js \
+	sitehashpw-extension* \
+	sitehashpw-frontend.css \
 	LICENSE \
 	LICENSE.html \
 	argon2-browser/argon2/LICENSE \

@@ -70,7 +70,7 @@ function getsitename(site) {
   return site;
 }
 
-function sitepw(site, generation, func, len, masterpw) {
+function sitehashpw(site, generation, func, len, masterpw) {
   return func(site, masterpw, generation, len).then((raw) => {
     return raw.substr(0, len);
   });

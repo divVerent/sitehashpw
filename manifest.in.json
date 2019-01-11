@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "SitePW",
+  "name": "SiteHashPW",
   "version": "1.4.`git log --oneline | wc -l`",
   "version_name": "`git describe --always --dirty`",
 
@@ -12,7 +12,7 @@
   },
 
   "browser_action": {
-    "default_title": "SitePW",
+    "default_title": "SiteHashPW",
     "default_icon": {
       "16": "icon-16.png",
       "24": "icon-24.png",
@@ -39,16 +39,16 @@
       "crypto-js/sha256.js",
       "crypto-js/enc-base64.js",
       "crypto-js/format-hex.js",
-      "sitepw.js",
-      "sitepw-extension.js"
+      "sitehashpw.js",
+      "sitehashpw-extension.js"
     ]
   },
 
-  "homepage_url": "https://github.com/divVerent/sitepw/",
+  "homepage_url": "https://github.com/divVerent/sitehashpw/",
 
   "incognito": "spanning",
 
-  "options_page": "sitepw-extension-options.html",
+  "options_page": "sitehashpw-extension-options.html",
 
   "permissions": [
     "activeTab",
