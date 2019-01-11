@@ -45,9 +45,9 @@ const methods = {
     func: hmac_func(CryptoJS.HmacSHA256),
     command: "echo \"$site\" | openssl sha256 -hmac \"$masterpw#$generation\" -binary | base64 | cut -c 1-$len"
   },
-  "PBKDF2-SHA-256-30k": {
-    func: pbkdf2_func(CryptoJS.SHA256),
-    command: "echo -n \"$masterpw\" | nettle-pbkdf2 --iterations=30000 --length=$(((len+1)*3/4)) --raw \"$site#$generation\" | base64 | cut -c 1-$len"
+  "PBKDF2-SHA-256-20k": {
+    func: pbkdf2_func(CryptoJS.algo.SHA256, 20000),
+    command: "echo -n \"$masterpw\" | nettle-pbkdf2 --iterations=20000 --length=$(((len+1)*3/4)) --raw \"$site#$generation\" | base64 | cut -c 1-$len"
   },
   "Argon2id-1Mx16": {
     func: argon2i_func(16, 10),
