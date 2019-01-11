@@ -40,6 +40,9 @@
       "crypto-js/sha256.js",
       "crypto-js/enc-base64.js",
       "crypto-js/format-hex.js",
+      "punycode.js/punycode.js",
+      "publicsuffixlist.js/publicsuffixlist.js",
+      "public-suffix-list-raw.js",
       "sitehashpw.js",
       "sitehashpw-extension.js"
     ]
