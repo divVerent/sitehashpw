@@ -2,8 +2,11 @@
  * @fileoverview Description of this file.
  */
 
-// Pi in hex, until this line hits 80 chars.
-const ARGON2_PEPPER = "3.243F6A8885A308D313198A2E03707344A4093822299F31D0082EF";
+// The first 100 digits beyind the comma of i^i = exp(-pi/2) = e(-2*a(1)) in bc.
+const ARGON2_PEPPER = "0." +
+  // 345678901234567890123456789012345678901234567890
+  "20787957635076190854695561983497877003387784163176" +
+  "96080751358830554198772854821397886002778654260353";
 
 function hmac_func(func) {
   return (site, masterpw, generation, len) =>
