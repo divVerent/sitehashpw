@@ -19,6 +19,9 @@ Features include:
 *   Storage and sync of per-site parameters, including site-specific password
     length, generation and hash function.
 
+You can install it from the
+[Chrome Web Store](https://chrome.google.com/webstore/detail/cdoapnbhhjphahhgbfflbpnhcnokgjgm).
+
 ## Building
 
 ```
