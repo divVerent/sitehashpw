@@ -19,7 +19,9 @@ Features include:
 *   Storage and sync of per-site parameters, including site-specific password
     length, generation and hash function.
 *   Password generation is simple to describe - UNIX commands can be shown to
-    generate passwords easily even without this extension.
+    generate passwords easily even without this extension. Print those out, and
+    you can still generate the same passwords 50 years from now with who knows
+    what kind of computer!
 
 You can install it from the
 [Chrome Web Store](https://chrome.google.com/webstore/detail/cdoapnbhhjphahhgbfflbpnhcnokgjgm).
@@ -95,6 +97,19 @@ After building:
 *   Or just view the included `index.html` in a browser. You may host it on your
     web server, but never use a version hosted by someone else, as there is no
     way for you to ensure integrity of a hosted version!
+
+## Requested Contributions
+
+The following additions would be very welcome:
+
+*   More hash functions. To support the "UNIX command" way, only hash functions
+    are acceptable that have a UNIX command to generate them available in common
+    Linux distributions; but there might be more than just `openssl`
+    and `argon2` that one can use :)
+*   Compatibility with other extensions. Especially
+    [UniquePasswordBuilder](https://paulgreg.me/UniquePasswordBuilder/)
+    has earned my respect, and I already have a shell script prototype
+    reimplementation of it to use as UNIX command "backup solution".
 
 ## License
 
