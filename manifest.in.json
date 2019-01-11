@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SitePW",
-  "version": "1.3.`git log --oneline | wc -l`",
+  "version": "1.4.`git log --oneline | wc -l`",
   "version_name": "`git describe --always --dirty`",
 
   "description": "A hash based password manager that generates unique passwords per website instead of storing them in a database.",
