@@ -10,8 +10,9 @@ per-site passwords.
 
 Features include:
 
-*   Two hash functions to choose from: Argon2id (secure, with 3 sets of
-    parameters) and HMAC-SHA-256 (fast).
+*   Three hash functions to choose from: Argon2id (secure, with 3 sets of
+    parameters), PBKDF2 (medium, old style) and HMAC-SHA-256 (very fast but not
+    very secure unless your master password is very long).
 *   Support for two master passwords to allow migrating all sites to a new
     master password. Master passwords are never synced.
 *   Master password can be stored in the local browser, or asked once per
