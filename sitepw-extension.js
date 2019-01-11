@@ -82,13 +82,11 @@ function fix_override(sitename, override) {
   return site_settings;
 }
 
-function get_site_settings(sitename, allow_write) {
+function get_site_settings(sitename) {
   let site_settings = get_setting("overrides")[sitename];
   if (site_settings == null) {
     site_settings = get_default_settings(sitename);
-    if (allow_write) {
-      get_setting("overrides")[sitename] = site_settings;
-    }
+    get_setting("overrides")[sitename] = site_settings;
   }
   return site_settings;
 }
@@ -101,10 +99,10 @@ function fix_overrides(v) {
   return out;
 }
 
-function get_sitepw(url, allow_write) {
+function get_sitepw(url) {
   const sitename = getsitename(url);
   set_setting("last_site", sitename);
-  const site_settings = get_site_settings(sitename, allow_write);
+  const site_settings = get_site_settings(sitename);
   const method = methods[site_settings.method];
   const pw_key = site_settings.use_old_password ? "oldmasterpw" : "masterpw";
   const pw_tempkey = site_settings.use_old_password ? "oldmasterpw_temp" :
@@ -118,8 +116,7 @@ function get_sitepw(url, allow_write) {
     const new_pw = prompt(pw_string + " master password:");
     if (new_pw != null && new_pw != "") {
       pw = new_pw;
-      if (allow_write)
-        set_setting(pw_tempkey, new_pw);
+      set_setting(pw_tempkey, new_pw);
     }
   }
 
@@ -165,7 +162,7 @@ function init() {
             sendResponse(out);
           }
           if (request.sitepw_get_password != null) {
-            get_sitepw(request.sitepw_get_password, false).then(
+            get_sitepw(request.sitepw_get_password).then(
               sendResponse);
             return true; // We'll sendResponse asynchronously.
           }
