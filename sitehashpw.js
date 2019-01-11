@@ -14,6 +14,17 @@ function hmac_func(func) {
       CryptoJS.enc.Base64));
 }
 
+function pbkdf2_func(func, iterations) {
+  return (site, masterpw, generation, len) =>
+    Promise.resolve(
+      CryptoJS.PBKDF2(masterpw, site + "#" + generation, {
+        keySize: Math.floor((len * 1 + 3) / 4),
+        hasher: func,
+        iterations: iterations
+      }).toString(
+        CryptoJS.enc.Base64));
+}
+
 function argon2i_func(time, memp) {
   return (site, masterpw, generation, len) => argon2.hash({
       distPath: 'argon2-browser/dist',
@@ -32,25 +43,29 @@ function argon2i_func(time, memp) {
 const methods = {
   "HMAC-SHA-256": {
     func: hmac_func(CryptoJS.HmacSHA256),
-    command: "echo \"$site\" | openssl sha256 -hmac \"$masterpw#$generation\" -binary | openssl base64 -e | cut -c 1-$len"
+    command: "echo \"$site\" | openssl sha256 -hmac \"$masterpw#$generation\" -binary | base64 | cut -c 1-$len"
+  },
+  "PBKDF2-SHA-256-30k": {
+    func: pbkdf2_func(CryptoJS.SHA256),
+    command: "echo -n \"$masterpw\" | nettle-pbkdf2 --iterations=30000 --length=$(((len+1)*3/4)) --raw \"$site#$generation\" | base64 | cut -c 1-$len"
   },
   "Argon2id-1Mx16": {
     func: argon2i_func(16, 10),
     command: "echo -n \"$masterpwd\" | argon2 \"$site#$generation#" +
       ARGON2_PEPPER +
-      "\" -id -r -t 16 -m 10 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | openssl base64 -e | cut -c 1-$len"
+      "\" -id -r -t 16 -m 10 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | base64 | cut -c 1-$len"
   },
   "Argon2id-4Mx3": {
     func: argon2i_func(3, 12),
     command: "echo -n \"$masterpwd\" | argon2 \"$site#$generation#" +
       ARGON2_PEPPER +
-      "\" -id -r -t 3 -m 12 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | openssl base64 -e | cut -c 1-$len"
+      "\" -id -r -t 3 -m 12 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | base64 | cut -c 1-$len"
   },
   "Argon2id-16Mx1": {
     func: argon2i_func(1, 14),
     command: "echo -n \"$masterpwd\" | argon2 \"$site#$generation#" +
       ARGON2_PEPPER +
-      "\" -id -r -t 1 -m 14 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | openssl base64 -e | cut -c 1-$len"
+      "\" -id -r -t 1 -m 14 -p 1 -l $(((len+1)*3/4)) | xxd -r -p | base64 | cut -c 1-$len"
   },
 };
 

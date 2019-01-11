@@ -44,4 +44,4 @@ zip -9r extension.zip \
 	publicsuffixlist.js/publicsuffixlist.js \
 	public-suffix-list-raw.js \
 	list/LICENSE \
-	$(tr '"' '\n' < manifest.json | grep -E '/.*\.(js|html|png)$')
+	$(tr '"' '\n' < manifest.in.json | grep -E '/.*\.(js|html|png)$')

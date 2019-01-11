@@ -36,6 +36,7 @@
       "crypto-js/x64-core.js",
       "crypto-js/cipher-core.js",
       "crypto-js/hmac.js",
+      "crypto-js/pbkdf2.js",
       "crypto-js/sha256.js",
       "crypto-js/enc-base64.js",
       "crypto-js/format-hex.js",
