@@ -74,6 +74,12 @@ Then to obtain a password:
     to password policies, go to the options and increment the site's generation
     number until it is accepted.
 
+*   For maximum security when using the extension, do not fill in the
+    master password, and instead prepend a "user salt" to the per-site
+    password. This will then require knowledge of two secrets to generate
+    a password, one of which you store on your computer (the "user salt")
+    and one of which you enter in every browser session.
+
 ## Building
 
 ```
