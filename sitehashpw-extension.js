@@ -132,12 +132,20 @@ function do_sitehashpw(tab) {
       chrome.tabs.executeScript(tab.id, {
         "file": "sitehashpw-extension-contentscript.js"
       }, (fieldnames) => {
+        if (fieldnames == null) {
+          alert(
+            'Failed to insert password: content script has not run.'
+          );
+          return;
+        }
         const message = {};
         for (const fieldname of fieldnames)
           message[fieldname] = password;
         chrome.tabs.sendMessage(tab.id, message, (response) => {
           if (!response.sitehashpw_status) {
-            alert('Failed to insert password.');
+            alert(
+              'Failed to insert password: content script failed.'
+            );
           }
         });
       });
