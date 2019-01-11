@@ -5,7 +5,7 @@ set -ex
 sh LICENSE > LICENSE.html
 
 for size in 16 48 128; do
-	convert -size "$size"x"$size" icon.svg icon-"$size".png
+	inkscape -z -e icon-"$size".png -w "$size" -h "$size" icon.svg
 done
 
 sh <<EEOF > manifest.json
