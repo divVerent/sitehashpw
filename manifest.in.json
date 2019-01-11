@@ -12,7 +12,12 @@
   },
 
   "browser_action": {
-    "default_title": "SitePW"
+    "default_title": "SitePW",
+    "default_icon": {
+      "16": "icon-16.png",
+      "24": "icon-24.png",
+      "32": "icon-32.png"
+    }
   },
   "commands": {
     "_execute_browser_action": {

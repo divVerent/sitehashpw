@@ -4,7 +4,7 @@ set -ex
 
 sh LICENSE > LICENSE.html
 
-for size in 16 48 128; do
+for size in 16 24 32 48 128; do
 	inkscape -z -e icon-"$size".png -w "$size" -h "$size" icon.svg
 done
 
