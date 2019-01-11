@@ -46,6 +46,24 @@ SOFTWARE.
 `cat "argon2-browser/README.md" | grep -A999 License`
 </pre>
 
+<hr>
+<h1>License of <a href="https://github.com/bestiejs/punycode.js">Punycode.js</a></h1>
+<pre>
+`cat "punycode.js/LICENSE-MIT.txt"`
+</pre>
+
+<hr>
+<h1>License of <a href="https://github.com/gorhill/publicsuffixlist.js">publicsuffixlist.js</a></h1>
+<pre>
+`cat "publicsuffixlist.js/APLv2"`
+</pre>
+
+<hr>
+<h1>License of the <a href="https://github.com/publicsuffix/list">Public Suffix List</a></h1>
+<pre>
+`cat list/LICENSE`
+</pre>
+
 </body>
 </html>
 EOF

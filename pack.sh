@@ -14,11 +14,20 @@ cat <<EOF
 EOF
 EEOF
 
+sed -e "
+	1 i publicSuffixListRaw = '\\\\
+	s,\\\\,\\\\\\\\,g
+	s,',\\\\',g
+	s,$,\\\\n\\\\,
+	\$ a ';
+" < list/public_suffix_list.dat > public-suffix-list-raw.js
+
 rm -f extension.zip
 zip -9r extension.zip \
 	manifest.json \
 	argon2-browser/dist/argon2-asm.min.js \
 	icon-*.png \
+	module-defs.js \
 	sitehashpw.js \
 	sitehashpw-extension* \
 	sitehashpw-frontend.css \
@@ -28,4 +37,11 @@ zip -9r extension.zip \
 	argon2-browser/README.md \
 	crypto-js/LICENSE \
 	crypto-js/README.md \
+	punycode.js/punycode.js \
+	punycode.js/LICENSE-MIT.txt \
+	publicsuffixlist.js/APLv2 \
+	publicsuffixlist.js/GPLv3 \
+	publicsuffixlist.js/publicsuffixlist.js \
+	public-suffix-list-raw.js \
+	list/LICENSE \
 	$(tr '"' '\n' < manifest.json | grep -E '/.*\.(js|html|png)$')

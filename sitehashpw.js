@@ -55,7 +55,6 @@ const methods = {
 };
 
 function getsitename(site) {
-  // TODO(rpolzer) .co.uk etc. handling
   site = site.toLowerCase();
   if (site.indexOf("/") >= 0) {
     const parser = document.createElement('a');
@@ -63,8 +62,14 @@ function getsitename(site) {
     if (parser.hostname)
       site = parser.hostname;
   }
-  const pattern = /[^.]*\.[^.]*$/;
-  const match = pattern.exec(site);
+  // For known domains, 
+  const domain = window.publicSuffixList.getDomain(site);
+  // Ensure at least two labels.
+  if (domain.match(/\./)) {
+    return domain;
+  }
+  // Fallback to "last two labels".
+  const match = site.match(/[^.]*\.[^.]*$/);
   if (match)
     site = match[0];
   return site;
@@ -75,3 +80,5 @@ function sitehashpw(site, generation, func, len, masterpw) {
     return raw.substr(0, len);
   });
 }
+
+window.publicSuffixList.parse(publicSuffixListRaw, punycode.toASCII);

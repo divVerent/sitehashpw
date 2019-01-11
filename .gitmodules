@@ -6,3 +6,15 @@
 	path = argon2-browser
 	url = https://github.com/antelle/argon2-browser
 	branch = master
+[submodule "publicsuffixlist.js"]
+	path = publicsuffixlist.js
+	url = https://github.com/gorhill/publicsuffixlist.js
+	branch = master
+[submodule "punycode.js"]
+	path = punycode.js
+	url = https://github.com/bestiejs/punycode.js
+	branch = master
+[submodule "list"]
+	path = list
+	url = https://github.com/publicsuffix/list
+	branch = master
