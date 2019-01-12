@@ -111,6 +111,11 @@ The following additions would be very welcome:
     [UniquePasswordBuilder](https://paulgreg.me/UniquePasswordBuilder/)
     has earned my respect, and I already have a shell script prototype
     reimplementation of it to use as UNIX command "backup solution".
+*   It would be really cool to migrate this to the Web Extension API for
+    Firefox support (including mobile).
+*   In the same vein, a progressive web app could be cool, as that would
+    allow storing the app and its settings on the phone. With the
+    Web Share Target API this could be very usable as well then.
 
 ## License
 
