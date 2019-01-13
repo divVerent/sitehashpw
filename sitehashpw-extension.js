@@ -85,6 +85,7 @@ function get_site_settings(sitename) {
   if (site_settings == null) {
     site_settings = get_default_settings(sitename);
     get_setting("overrides")[sitename] = site_settings;
+    save_settings();
   }
   return site_settings;
 }
