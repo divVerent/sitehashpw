@@ -15,8 +15,7 @@ Features include:
     very secure unless your master password is very long).
 *   Support for two master passwords to allow migrating all sites to a new
     master password. Master passwords are never synced.
-*   Master password can be stored in the local browser, or asked once per
-    session.
+*   Master password can be stored in the local browser, or asked every time.
 *   Storage and sync of per-site parameters, including site-specific password
     length, generation and hash function.
 *   Password generation is simple to describe - UNIX commands can be shown to
@@ -41,8 +40,7 @@ To obtain a password:
 *   Click/select the site's password field.
 *   Click the extension icon in the browser bar.
 *   In case you have not set up a saved master password, you will be prompted
-    for it. This will then be stored in memory for the duration of the browser
-    session only.
+    for it.
 
 The password will be filled in automatically.
 
@@ -81,7 +79,7 @@ Then to obtain a password:
     master password, and instead prepend a "user salt" to the per-site
     password. This will then require knowledge of two secrets to generate
     a password, one of which you store on your computer (the "user salt")
-    and one of which you enter in every browser session.
+    and one of which you enter every use.
 
 ## Building
 
