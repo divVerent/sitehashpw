@@ -37,6 +37,7 @@ input, select, option {
 }
 #overrides option {
   text-align: left;
+  font-size: 12pt;
 }
 #overrides_delete, #overrides_edit, #overrides_password, #overrides_add {
   padding: 0;
