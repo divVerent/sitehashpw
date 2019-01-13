@@ -142,9 +142,9 @@ function delete_override() {
 function swap_passwords() {
   for (const override of Object.values(settings.overrides))
     override.use_old_password = !override.use_old_password;
-  const oldmasterpw = settings.oldmasterpw;
-  settings.oldmasterpw = settings.masterpw;
-  settings.masterpw = oldmasterpw;
+  const saved = oldmasterpw.value;
+  oldmasterpw.value = masterpw.value;
+  masterpw.value = saved;
   save();
 }
 
