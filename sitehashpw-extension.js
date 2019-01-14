@@ -155,9 +155,9 @@ function do_sitehashpw(tab) {
 function init() {
   chrome.storage.sync.get(Object.keys(settings_sync), (new_settings) => {
     update_settings(new_settings);
-    save_settings(); // Make sure settings always persist.
     chrome.storage.local.get(Object.keys(settings_local), (new_settings) => {
       update_settings(new_settings);
+      save_settings(); // Make sure settings always persist.
       chrome.browserAction.onClicked.addListener(do_sitehashpw);
       chrome.runtime.onMessage.addListener(
         (request, sender, sendResponse) => {
