@@ -41,16 +41,17 @@ input, select, option {
 }
 #overrides option {
   text-align: left;
+  font-size: 12pt;
 }
 #overrides_delete, #overrides_edit, #overrides_password, #overrides_add {
   padding: 0;
   margin: 0;
   width: 25%;
 }
-#overrides_mark_as_old, #overrides_mark_as_current {
+#overrides_swap_passwords {
   padding: 0;
   margin: 0;
-  width: 50%;
+  width: 100%;
 }
 a {
   color: #88f;

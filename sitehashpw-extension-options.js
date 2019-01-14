@@ -1,6 +1,6 @@
 let masterpw, oldmasterpw, generation, method, len, overrides, overrides_add,
-  overrides_delete, overrides_edit, overrides_password, overrides_mark_as_old,
-  overrides_mark_as_current, showcommandlink;
+  overrides_delete, overrides_edit, overrides_password,
+  overrides_swap_passwords, showcommandlink;
 let settings = {};
 
 function serialize(sitename, override, force) {
@@ -139,27 +139,12 @@ function delete_override() {
   save();
 }
 
-function mark_as_old() {
-  for (const [k, override] of Object.entries(settings.overrides)) {
-    if (override.use_old_password == true) {
-      alert(k + " still uses the previous old password. Cannot proceed.");
-      return;
-    }
-  }
+function swap_passwords() {
   for (const override of Object.values(settings.overrides))
-    override.use_old_password = true;
-  save();
-}
-
-function mark_as_current() {
-  for (const [k, override] of Object.entries(settings.overrides)) {
-    if (override.use_old_password == false) {
-      alert(k + " already uses the current password. Cannot proceed.");
-      return;
-    }
-  }
-  for (const override of Object.values(settings.overrides))
-    override.use_old_password = false;
+    override.use_old_password = !override.use_old_password;
+  const saved = oldmasterpw.value;
+  oldmasterpw.value = masterpw.value;
+  masterpw.value = saved;
   save();
 }
 
@@ -187,8 +172,7 @@ function init2(settings_) {
   overrides_edit.onclick = edit_override;
   overrides_password.onclick = show_override_password;
   overrides_delete.onclick = delete_override;
-  overrides_mark_as_old.onclick = mark_as_old;
-  overrides_mark_as_current.onclick = mark_as_current;
+  overrides_swap_passwords.onclick = swap_passwords;
   showcommandlink.onclick = show_command;
 }
 
@@ -205,9 +189,8 @@ function init() {
   overrides_edit = document.getElementById("overrides_edit");
   overrides_password = document.getElementById("overrides_password");
   overrides_delete = document.getElementById("overrides_delete");
-  overrides_mark_as_old = document.getElementById("overrides_mark_as_old");
-  overrides_mark_as_current = document.getElementById(
-    "overrides_mark_as_current");
+  overrides_swap_passwords = document.getElementById(
+    "overrides_swap_passwords");
   showcommandlink = document.getElementById("showcommandlink");
 
   // Get settings.

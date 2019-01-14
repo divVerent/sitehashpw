@@ -15,8 +15,7 @@ Features include:
     very secure unless your master password is very long).
 *   Support for two master passwords to allow migrating all sites to a new
     master password. Master passwords are never synced.
-*   Master password can be stored in the local browser, or asked once per
-    session.
+*   Master password can be stored in the local browser, or asked every time.
 *   Storage and sync of per-site parameters, including site-specific password
     length, generation and hash function.
 *   Password generation is simple to describe - UNIX commands can be shown to
@@ -41,8 +40,7 @@ To obtain a password:
 *   Click/select the site's password field.
 *   Click the extension icon in the browser bar.
 *   In case you have not set up a saved master password, you will be prompted
-    for it. This will then be stored in memory for the duration of the browser
-    session only.
+    for it.
 
 The password will be filled in automatically.
 
@@ -81,7 +79,7 @@ Then to obtain a password:
     master password, and instead prepend a "user salt" to the per-site
     password. This will then require knowledge of two secrets to generate
     a password, one of which you store on your computer (the "user salt")
-    and one of which you enter in every browser session.
+    and one of which you enter every use.
 
 ## Building
 
@@ -111,6 +109,11 @@ The following additions would be very welcome:
     [UniquePasswordBuilder](https://paulgreg.me/UniquePasswordBuilder/)
     has earned my respect, and I already have a shell script prototype
     reimplementation of it to use as UNIX command "backup solution".
+*   It would be really cool to migrate this to the Web Extension API for
+    Firefox support (including mobile).
+*   In the same vein, a progressive web app could be cool, as that would
+    allow storing the app and its settings on the phone. With the
+    Web Share Target API this could be very usable as well then.
 
 ## License
 

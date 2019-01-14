@@ -15,8 +15,6 @@ const settings_local = {
 // storing the master password on disk.
 const settings_nosave = {
   "last_site": "",
-  "masterpw_temp": "",
-  "oldmasterpw_temp": ""
 };
 
 function get_setting(s) {
@@ -88,6 +86,7 @@ function get_site_settings(sitename) {
   if (site_settings == null) {
     site_settings = get_default_settings(sitename);
     get_setting("overrides")[sitename] = site_settings;
+    save_settings();
   }
   return site_settings;
 }
@@ -106,22 +105,17 @@ function get_sitehashpw(url) {
   const site_settings = get_site_settings(sitename);
   const method = methods[site_settings.method];
   const pw_key = site_settings.use_old_password ? "oldmasterpw" : "masterpw";
-  const pw_tempkey = site_settings.use_old_password ? "oldmasterpw_temp" :
-    "masterpw_temp";
   const pw_string = site_settings.use_old_password ? "OLD" : "CURRENT";
 
   let pw = get_setting(pw_key);
-  if (pw == "")
-    pw = get_setting(pw_tempkey);
   if (pw == "") {
     const new_pw = prompt('Your AntiPhish is: ' + get_setting('antiphish') +
       '. Do not enter your master password here if this does not match what ' +
       'the extension options show, or if the AntiPhish message is missing ' +
       'entirely.\n\n' +
       pw_string + ' master password:');
-    if (new_pw != null && new_pw != "") {
+    if (new_pw != null) {
       pw = new_pw;
-      set_setting(pw_tempkey, new_pw);
     }
   }
 
