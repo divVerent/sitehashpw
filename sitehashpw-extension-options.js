@@ -166,6 +166,7 @@ function mark_as_current() {
 function init2(settings_) {
   settings = settings_;
   // Load stuff.
+  antiphish.appendChild(document.createTextNode(settings.antiphish));
   masterpw.value = settings.masterpw;
   oldmasterpw.value = settings.oldmasterpw;
   generation.value = settings.generation;
@@ -193,6 +194,7 @@ function init2(settings_) {
 
 function init() {
   // Get objects.
+  antiphish = document.getElementById("antiphish");
   masterpw = document.getElementById("masterpw");
   oldmasterpw = document.getElementById("oldmasterpw");
   generation = document.getElementById("generation");
@@ -210,8 +212,8 @@ function init() {
 
   // Get settings.
   chrome.runtime.sendMessage({
-    "sitehashpw_get_settings": ["masterpw", "oldmasterpw", "generation",
-      "method",
+    "sitehashpw_get_settings": [
+      "antiphish", "masterpw", "oldmasterpw", "generation", "method",
       "len", "overrides", "last_site"
     ]
   }, init2);

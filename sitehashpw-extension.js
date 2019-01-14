@@ -1,4 +1,5 @@
 const settings_sync = {
+  "antiphish": generate_antiphish(),
   "method": "Argon2id-16Mx1",
   "len": 12,
   "overrides": {},
@@ -113,7 +114,11 @@ function get_sitehashpw(url) {
   if (pw == "")
     pw = get_setting(pw_tempkey);
   if (pw == "") {
-    const new_pw = prompt(pw_string + " master password:");
+    const new_pw = prompt('Your AntiPhish is: ' + get_setting('antiphish') +
+      '. Do not enter your master password here if this does not match what ' +
+      'the extension options show, or if the AntiPhish message is missing ' +
+      'entirely.\n\n' +
+      pw_string + ' master password:');
     if (new_pw != null && new_pw != "") {
       pw = new_pw;
       set_setting(pw_tempkey, new_pw);
@@ -154,10 +159,10 @@ function do_sitehashpw(tab) {
 }
 
 function init() {
-  chrome.storage.sync.get(["method", "len", "overrides", "generation"], (
-    new_settings) => {
+  chrome.storage.sync.get(Object.keys(settings_sync), (new_settings) => {
     update_settings(new_settings);
-    chrome.storage.local.get(["masterpw"], (new_settings) => {
+    save_settings(); // Make sure settings always persist.
+    chrome.storage.local.get(Object.keys(settings_local), (new_settings) => {
       update_settings(new_settings);
       chrome.browserAction.onClicked.addListener(do_sitehashpw);
       chrome.runtime.onMessage.addListener(

@@ -2,7 +2,7 @@
  * @fileoverview Description of this file.
  */
 
-let masterpw, site, generation, pw, method, len, showcommandlink;
+let antiphish, masterpw, site, generation, pw, method, len, showcommandlink;
 let q = Promise.resolve();
 
 function do_sitehashpw() {
@@ -68,15 +68,20 @@ function init() {
   method = document.getElementById("method");
   len = document.getElementById("len");
   showcommandlink = document.getElementById("showcommandlink");
+  antiphish = document.getElementById("antiphish");
 
   document.getElementById("bookmarklet").href =
     "javascript:void(window.open(\"" +
     location.href + "#\"+location.href));";
 
   // Load stuff.
-  if (localStorage.getItem("len") != "")
+  if (!localStorage.getItem("antiphish"))
+    localStorage.setItem("antiphish", generate_antiphish());
+  antiphish.appendChild(document.createTextNode(
+    localStorage.getItem("antiphish")));
+  if (localStorage.getItem("len"))
     len.value = localStorage.getItem("len");
-  if (localStorage.getItem("method") != "")
+  if (localStorage.getItem("method"))
     for (let i = 0; i < method.options.length; ++i)
       if (method.options[i].value ==
         localStorage.getItem("method"))

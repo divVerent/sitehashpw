@@ -96,4 +96,13 @@ function sitehashpw(site, generation, func, len, masterpw) {
   });
 }
 
+function generate_antiphish() {
+  let antiphish = "";
+  for (let i = 0; i < 9; ++i) {
+    const template = (i % 2 == 0) ? "bcdfghjklmnpqrstvwxyz" : "aeiou";
+    antiphish += template[Math.floor(Math.random() * template.length)];
+  }
+  return antiphish;
+}
+
 window.publicSuffixList.parse(publicSuffixListRaw, punycode.toASCII);

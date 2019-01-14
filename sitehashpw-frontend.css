@@ -4,6 +4,10 @@ body {
   color: #fff;
   background-color: #040;
 }
+#antiphish {
+  font-weight: bold;
+  text-decoration: underline;
+}
 dl {
   margin-left: 0;
   margin-right: 0;
