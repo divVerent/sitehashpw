@@ -70,24 +70,28 @@ const methods = {
 };
 
 function getsitename(site) {
+  let protocolPrefix = '';
   site = site.toLowerCase();
   if (site.indexOf("/") >= 0) {
     const parser = document.createElement('a');
     parser.href = site;
-    if (parser.hostname)
+    if (parser.hostname) {
       site = parser.hostname;
+      if (parser.protocol != 'https:')
+        protocolPrefix = parser.protocol + '//';
+    }
   }
   // For known domains, 
   const domain = window.publicSuffixList.getDomain(site);
   // Ensure at least two labels.
   if (domain.match(/\./)) {
-    return domain;
+    return protocolPrefix + domain;
   }
   // Fallback to "last two labels".
   const match = site.match(/[^.]*\.[^.]*$/);
   if (match)
     site = match[0];
-  return site;
+  return protocolPrefix + site;
 }
 
 function sitehashpw(site, generation, func, len, masterpw) {
