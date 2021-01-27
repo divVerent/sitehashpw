@@ -24,21 +24,33 @@ function set_password (password) {
   return true;
 }
 
-browser.runtime.onMessage.addListener(
-  (request, sender, sendResponse) => {
-    if (request.sitehashpw_password != null) {
-      const status = set_password(request.sitehashpw_password);
-      sendResponse({
-        "sitehashpw_status": status
-      });
-      if (!status) {
-        alert(
-          'Failed to insert password: found no place to insert.'
-        );
+var loaded;
+if (!loaded) {
+  loaded = true;
+  browser.runtime.onMessage.addListener(
+    (request, sender, sendResponse) => {
+      if (request.sitehashpw_alert != null) {
+        alert(request.sitehashpw_alert);
+        sendResponse(null);
+      }
+      if (request.sitehashpw_prompt != null) {
+        const response = prompt(request.sitehashpw_prompt);
+        sendResponse(response);
+      }
+      if (request.sitehashpw_password != null) {
+        const status = set_password(request.sitehashpw_password);
+        sendResponse({
+          "sitehashpw_status": status
+        });
+        if (!status) {
+          alert(
+            'Failed to insert password: found no place to insert.'
+          );
+        }
       }
     }
-  }
-);
+  );
+}
 
 // fieldnames =
 "sitehashpw_password";

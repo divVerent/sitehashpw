@@ -17,7 +17,7 @@ const settings_nosave = {
   "last_site": "",
 };
 
-function get_setting (s) {
+function get_setting (tab, s) {
   if (s in settings_sync) {
     return settings_sync[s];
   }
@@ -27,10 +27,10 @@ function get_setting (s) {
   if (s in settings_nosave) {
     return settings_nosave[s];
   }
-  alert("invalid use of get_setting: " + s);
+  do_alert(tab, "invalid use of get_setting: " + s);
 }
 
-function set_setting (s, v) {
+function set_setting (tab, s, v) {
   if (s in settings_sync) {
     settings_sync[s] = v;
     return;
@@ -43,14 +43,14 @@ function set_setting (s, v) {
     settings_nosave[s] = v;
     return;
   }
-  alert("invalid use of set_setting: " + s);
+  do_alert(tab, "invalid use of set_setting: " + s);
 }
 
-function update_settings (e) {
+function update_settings (tab, e) {
   for (const [key, value] of Object.entries(e))
-    set_setting(key, value);
+    set_setting(tab, key, value);
   if ("overrides" in e)
-    set_setting("overrides", fix_overrides(get_setting("overrides")));
+    set_setting(tab, "overrides", fix_overrides(tab, get_setting(tab, "overrides")));
 }
 
 function save_settings () {
@@ -58,18 +58,18 @@ function save_settings () {
   browser.storage.sync.set(settings_sync);
 }
 
-function get_default_settings (sitename) {
+function get_default_settings (tab, sitename) {
   return {
-    "method": get_setting("method"),
-    "len": get_setting("len"),
-    "generation": get_setting("generation"),
+    "method": get_setting(tab, "method"),
+    "len": get_setting(tab, "len"),
+    "generation": get_setting(tab, "generation"),
     "use_old_password": false,
     "alias": sitename
   };
 }
 
-function fix_override (sitename, override) {
-  const site_settings = get_default_settings(sitename);
+function fix_override (tab, sitename, override) {
+  const site_settings = get_default_settings(tab, sitename);
   if (override == null) {
     override = {};
   }
@@ -81,37 +81,35 @@ function fix_override (sitename, override) {
   return site_settings;
 }
 
-function get_site_settings (sitename) {
-  let site_settings = get_setting("overrides")[sitename];
+function get_site_settings (tab, sitename) {
+  let site_settings = get_setting(tab, "overrides")[sitename];
   if (site_settings == null) {
-    site_settings = get_default_settings(sitename);
-    get_setting("overrides")[sitename] = site_settings;
+    site_settings = get_default_settings(tab, sitename);
+    get_setting(tab, "overrides")[sitename] = site_settings;
     save_settings();
   }
   return site_settings;
 }
 
-function fix_overrides (v) {
+function fix_overrides (tab, v) {
   const out = {};
   for (const [k, override] of Object.entries(v)) {
-    out[k] = fix_override(k, override)
+    out[k] = fix_override(tab, k, override)
   }
   return out;
 }
 
-function get_sitehashpw (url) {
+async function get_sitehashpw (tab, url) {
   const sitename = getsitename(url);
-  set_setting("last_site", sitename);
-  const site_settings = get_site_settings(sitename);
+  set_setting(tab, "last_site", sitename);
+  const site_settings = get_site_settings(tab, sitename);
   const method = methods[site_settings.method];
   const pw_key = site_settings.use_old_password ? "oldmasterpw" : "masterpw";
   const pw_string = site_settings.use_old_password ? "OLD" : "CURRENT";
 
-  let pw = get_setting(pw_key);
+  let pw = get_setting(tab, pw_key);
   if (pw == "") {
-    // TODO this prompt() doesn't work in Firefox. But I really
-    // don't want the ContentScript to see the AntiPhish.
-    const new_pw = prompt('Your AntiPhish is: ' + get_setting('antiphish') +
+    const new_pw = await do_prompt(tab, 'Your AntiPhish is: ' + get_setting(tab, 'antiphish') +
       '. Do not enter your master password here if this does not match what ' +
       'the extension options show, or if the AntiPhish message is missing ' +
       'entirely.\n\n' +
@@ -121,38 +119,62 @@ function get_sitehashpw (url) {
     }
   }
 
-  return sitehashpw(site_settings.alias, site_settings.generation, method.func,
+  return await sitehashpw(site_settings.alias, site_settings.generation, method.func,
     site_settings.len, pw);
 }
 
 let q = Promise.resolve();
 
+async function do_alert (tab, message) {
+  if (tab == null) {
+    console.error(message);
+    return;
+  }
+  await browser.tabs.executeScript(tab.id, {
+    "file": "sitehashpw-extension-contentscript.js"
+  });
+  await browser.tabs.sendMessage(tab.id, {
+    'sitehashpw_alert': message
+  });
+}
+
+async function do_prompt (tab, message) {
+  if (tab == null) {
+    console.error(message);
+    return null;
+  }
+  await browser.tabs.executeScript(tab.id, {
+    "file": "sitehashpw-extension-contentscript.js"
+  });
+  const response = await browser.tabs.sendMessage(tab.id, {
+    'sitehashpw_prompt': message
+  });
+  return response;
+}
+
 function do_sitehashpw (tab) {
-  q = q.finally(() => {
-    return get_sitehashpw(tab.url, true).then((password) => {
-      return browser.tabs.executeScript(tab.id, {
-        "file": "sitehashpw-extension-contentscript.js"
-      })
-    }).then((fieldnames) => {
-      if (fieldnames == null) {
-        alert(
-          'Failed to insert password: content script has not run.'
-        );
-        return;
-      }
-      const message = {};
-      for (const fieldname of fieldnames)
-        message[fieldname] = password;
-      browser.tabs.sendMessage(tab.id, message);
+  q = q.finally(async () => {
+    const password = await get_sitehashpw(tab, tab.url, true);
+    const fieldnames = await browser.tabs.executeScript(tab.id, {
+      "file": "sitehashpw-extension-contentscript.js"
+    });
+    if (fieldnames == null) {
+      await do_alert(
+        tab, 'Failed to insert password: content script has not run.'
+      );
+      return;
+    }
+    await browser.tabs.sendMessage(tab.id, {
+      'sitehashpw_password': password
     });
   });
 }
 
 async function init () {
   const new_sync_settings = await browser.storage.sync.get(Object.keys(settings_sync));
-  update_settings(new_sync_settings);
+  update_settings(null, new_sync_settings);
   const new_local_settings = await browser.storage.local.get(Object.keys(settings_local));
-  update_settings(new_local_settings);
+  update_settings(null, new_local_settings);
   save_settings(); // Make sure settings always persist.
   browser.browserAction.onClicked.addListener(do_sitehashpw);
   browser.runtime.onMessage.addListener(
@@ -160,17 +182,17 @@ async function init () {
       if (request.sitehashpw_get_settings != null) {
         const out = {};
         for (const setting of request.sitehashpw_get_settings) {
-          out[setting] = get_setting(setting);
+          out[setting] = get_setting(null, setting);
         }
         sendResponse(out);
       }
       if (request.sitehashpw_get_password != null) {
-        get_sitehashpw(request.sitehashpw_get_password).then(
+        get_sitehashpw(null, request.sitehashpw_get_password).then(
           sendResponse);
         return true; // We'll sendResponse asynchronously.
       }
       if (request.sitehashpw_update_settings != null) {
-        update_settings(request.sitehashpw_update_settings);
+        update_settings(null, request.sitehashpw_update_settings);
         save_settings();
         sendResponse(null);
       }
