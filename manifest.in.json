@@ -53,7 +53,10 @@
 
   "incognito": "spanning",
 
-  "options_page": "sitehashpw-extension-options.html",
+  "options_ui": {
+    "page": "sitehashpw-extension-options.html",
+    "open_in_tab": true
+  },
 
   "permissions": [
     "activeTab",
