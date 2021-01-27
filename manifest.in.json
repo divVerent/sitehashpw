@@ -61,5 +61,11 @@
   "permissions": [
     "activeTab",
     "storage"
-  ]
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "sitehashpw@rm.cloudns.org"
+    }
+  }
 }
