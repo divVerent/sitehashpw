@@ -43,5 +43,6 @@ zip -9r extension.zip \
 	publicsuffixlist.js/GPLv3 \
 	publicsuffixlist.js/publicsuffixlist.js \
 	public-suffix-list-raw.js \
+	webextension-polyfill/src/browser-polyfill.js \
 	list/LICENSE \
 	$(tr '"' '\n' < manifest.in.json | grep -E '/.*\.(js|html|png)$')

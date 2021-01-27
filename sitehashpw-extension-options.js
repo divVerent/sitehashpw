@@ -3,7 +3,7 @@ let masterpw, oldmasterpw, generation, method, len, overrides, overrides_add,
   overrides_swap_passwords, showcommandlink;
 let settings = {};
 
-function serialize(sitename, override, force) {
+function serialize (sitename, override, force) {
   let text = "";
   if (override.alias != sitename || force)
     text += " alias=" + override.alias;
@@ -21,7 +21,7 @@ function serialize(sitename, override, force) {
     return text.substr(1);
 }
 
-function parse(sitename, override_str) {
+function parse (sitename, override_str) {
   const obj = {
     "len": settings.len,
     "method": settings.method,
@@ -45,7 +45,7 @@ function parse(sitename, override_str) {
   return obj;
 }
 
-function repopulate_overrides_list(selected) {
+function repopulate_overrides_list (selected) {
   if (selected == null)
     if (overrides.selectedIndex >= 0)
       selected = overrides.options[overrides.selectedIndex].value;
@@ -69,26 +69,26 @@ function repopulate_overrides_list(selected) {
   }
 }
 
-function save() {
+async function save () {
   settings.masterpw = masterpw.value;
   settings.oldmasterpw = oldmasterpw.value;
   settings.generation = generation.value;
   settings.len = len.value;
   settings.method = method.options[method.selectedIndex].value;
-  chrome.runtime.sendMessage({
+  browser.runtime.sendMessage({
     "sitehashpw_update_settings": settings
-  }, () => {
+  }).then(() => {
     repopulate_overrides_list(null);
   });
   return true;
 }
 
-function select_this() {
+function select_this () {
   this.select();
   return true;
 }
 
-function register_input_events(box) {
+function register_input_events (box) {
   if (box.type == "password" || box.type == "text")
     box.onclick = select_this;
   box.onchange = save;
@@ -97,7 +97,7 @@ function register_input_events(box) {
   box.onblur = save;
 }
 
-function add_override() {
+function add_override () {
   const sitename = getsitename(prompt("Site name:"));
   settings.overrides[sitename] = {
     "len": settings.len,
@@ -110,7 +110,7 @@ function add_override() {
   edit_override();
 }
 
-function edit_override() {
+function edit_override () {
   if (overrides.selectedIndex < 0)
     return;
   const sitename = overrides.options[overrides.selectedIndex].value;
@@ -120,18 +120,18 @@ function edit_override() {
   save();
 }
 
-function show_override_password() {
+function show_override_password () {
   if (overrides.selectedIndex < 0)
     return;
   const sitename = overrides.options[overrides.selectedIndex].value;
-  chrome.runtime.sendMessage({
+  browser.runtime.sendMessage({
     "sitehashpw_get_password": sitename
-  }, (pw) => {
+  }).then((pw) => {
     alert(pw);
   });
 }
 
-function delete_override() {
+function delete_override () {
   if (overrides.selectedIndex < 0)
     return;
   const sitename = overrides.options[overrides.selectedIndex].value;
@@ -139,7 +139,7 @@ function delete_override() {
   save();
 }
 
-function swap_passwords() {
+function swap_passwords () {
   for (const override of Object.values(settings.overrides))
     override.use_old_password = !override.use_old_password;
   const saved = oldmasterpw.value;
@@ -148,7 +148,7 @@ function swap_passwords() {
   save();
 }
 
-function init2(settings_) {
+function init2 (settings_) {
   settings = settings_;
   // Load stuff.
   antiphish.appendChild(document.createTextNode(settings.antiphish));
@@ -176,7 +176,7 @@ function init2(settings_) {
   showcommandlink.onclick = show_command;
 }
 
-function init() {
+function init () {
   // Get objects.
   antiphish = document.getElementById("antiphish");
   masterpw = document.getElementById("masterpw");
@@ -194,15 +194,15 @@ function init() {
   showcommandlink = document.getElementById("showcommandlink");
 
   // Get settings.
-  chrome.runtime.sendMessage({
+  browser.runtime.sendMessage({
     "sitehashpw_get_settings": [
       "antiphish", "masterpw", "oldmasterpw", "generation", "method",
       "len", "overrides", "last_site"
     ]
-  }, init2);
+  }).then(init2);
 }
 
-function show_command() {
+function show_command () {
   console.log(methods[method.options[method.selectedIndex].value].command);
   alert(methods[method.options[method.selectedIndex].value].command);
 }

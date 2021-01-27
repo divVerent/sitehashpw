@@ -54,8 +54,8 @@ function update_settings (e) {
 }
 
 function save_settings () {
-  chrome.storage.local.set(settings_local);
-  chrome.storage.sync.set(settings_sync);
+  browser.storage.local.set(settings_local);
+  browser.storage.sync.set(settings_sync);
 }
 
 function get_default_settings (sitename) {
@@ -130,54 +130,52 @@ let q = Promise.resolve();
 function do_sitehashpw (tab) {
   q = q.finally(() => {
     return get_sitehashpw(tab.url, true).then((password) => {
-      chrome.tabs.executeScript(tab.id, {
+      return browser.tabs.executeScript(tab.id, {
         "file": "sitehashpw-extension-contentscript.js"
-      }, (fieldnames) => {
-        if (fieldnames == null) {
-          alert(
-            'Failed to insert password: content script has not run.'
-          );
-          return;
-        }
-        const message = {};
-        for (const fieldname of fieldnames)
-          message[fieldname] = password;
-        chrome.tabs.sendMessage(tab.id, message);
-      });
+      })
+    }).then((fieldnames) => {
+      if (fieldnames == null) {
+        alert(
+          'Failed to insert password: content script has not run.'
+        );
+        return;
+      }
+      const message = {};
+      for (const fieldname of fieldnames)
+        message[fieldname] = password;
+      browser.tabs.sendMessage(tab.id, message);
     });
   });
 }
 
-function init () {
-  chrome.storage.sync.get(Object.keys(settings_sync), (new_settings) => {
-    update_settings(new_settings);
-    chrome.storage.local.get(Object.keys(settings_local), (new_settings) => {
-      update_settings(new_settings);
-      save_settings(); // Make sure settings always persist.
-      chrome.browserAction.onClicked.addListener(do_sitehashpw);
-      chrome.runtime.onMessage.addListener(
-        (request, sender, sendResponse) => {
-          if (request.sitehashpw_get_settings != null) {
-            const out = {};
-            for (const setting of request.sitehashpw_get_settings) {
-              out[setting] = get_setting(setting);
-            }
-            sendResponse(out);
-          }
-          if (request.sitehashpw_get_password != null) {
-            get_sitehashpw(request.sitehashpw_get_password).then(
-              sendResponse);
-            return true; // We'll sendResponse asynchronously.
-          }
-          if (request.sitehashpw_update_settings != null) {
-            update_settings(request.sitehashpw_update_settings);
-            save_settings();
-            sendResponse(null);
-          }
+async function init () {
+  const new_sync_settings = await browser.storage.sync.get(Object.keys(settings_sync));
+  update_settings(new_sync_settings);
+  const new_local_settings = await browser.storage.local.get(Object.keys(settings_local));
+  update_settings(new_local_settings);
+  save_settings(); // Make sure settings always persist.
+  browser.browserAction.onClicked.addListener(do_sitehashpw);
+  browser.runtime.onMessage.addListener(
+    (request, sender, sendResponse) => {
+      if (request.sitehashpw_get_settings != null) {
+        const out = {};
+        for (const setting of request.sitehashpw_get_settings) {
+          out[setting] = get_setting(setting);
         }
-      );
-    });
-  });
+        sendResponse(out);
+      }
+      if (request.sitehashpw_get_password != null) {
+        get_sitehashpw(request.sitehashpw_get_password).then(
+          sendResponse);
+        return true; // We'll sendResponse asynchronously.
+      }
+      if (request.sitehashpw_update_settings != null) {
+        update_settings(request.sitehashpw_update_settings);
+        save_settings();
+        sendResponse(null);
+      }
+    }
+  );
 }
 
 init();

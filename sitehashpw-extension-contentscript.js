@@ -24,7 +24,7 @@ function set_password (password) {
   return true;
 }
 
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
     if (request.sitehashpw_password != null) {
       const status = set_password(request.sitehashpw_password);
