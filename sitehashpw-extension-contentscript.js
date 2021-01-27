@@ -1,4 +1,4 @@
-function is_viable(e) {
+function is_viable (e) {
   if (e.nodeName == "INPUT") {
     if (e.type == "password")
       return true;
@@ -11,11 +11,11 @@ function is_viable(e) {
   return false;
 }
 
-function set_value(e, password) {
+function set_value (e, password) {
   e.value = password;
 }
 
-function set_password(password) {
+function set_password (password) {
   const element = document.activeElement;
   if (!is_viable(element)) {
     return false;
@@ -26,10 +26,17 @@ function set_password(password) {
 
 chrome.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
-    if (request.sitehashpw_password != null)
+    if (request.sitehashpw_password != null) {
+      const status = set_password(request.sitehashpw_password);
       sendResponse({
-        "sitehashpw_status": set_password(request.sitehashpw_password)
+        "sitehashpw_status": status
       });
+      if (!status) {
+        alert(
+          'Failed to insert password: found no place to insert.'
+        );
+      }
+    }
   }
 );
 

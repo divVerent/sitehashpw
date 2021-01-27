@@ -17,7 +17,7 @@ const settings_nosave = {
   "last_site": "",
 };
 
-function get_setting(s) {
+function get_setting (s) {
   if (s in settings_sync) {
     return settings_sync[s];
   }
@@ -30,7 +30,7 @@ function get_setting(s) {
   alert("invalid use of get_setting: " + s);
 }
 
-function set_setting(s, v) {
+function set_setting (s, v) {
   if (s in settings_sync) {
     settings_sync[s] = v;
     return;
@@ -46,19 +46,19 @@ function set_setting(s, v) {
   alert("invalid use of set_setting: " + s);
 }
 
-function update_settings(e) {
+function update_settings (e) {
   for (const [key, value] of Object.entries(e))
     set_setting(key, value);
   if ("overrides" in e)
     set_setting("overrides", fix_overrides(get_setting("overrides")));
 }
 
-function save_settings() {
+function save_settings () {
   chrome.storage.local.set(settings_local);
   chrome.storage.sync.set(settings_sync);
 }
 
-function get_default_settings(sitename) {
+function get_default_settings (sitename) {
   return {
     "method": get_setting("method"),
     "len": get_setting("len"),
@@ -68,7 +68,7 @@ function get_default_settings(sitename) {
   };
 }
 
-function fix_override(sitename, override) {
+function fix_override (sitename, override) {
   const site_settings = get_default_settings(sitename);
   if (override == null) {
     override = {};
@@ -81,7 +81,7 @@ function fix_override(sitename, override) {
   return site_settings;
 }
 
-function get_site_settings(sitename) {
+function get_site_settings (sitename) {
   let site_settings = get_setting("overrides")[sitename];
   if (site_settings == null) {
     site_settings = get_default_settings(sitename);
@@ -91,7 +91,7 @@ function get_site_settings(sitename) {
   return site_settings;
 }
 
-function fix_overrides(v) {
+function fix_overrides (v) {
   const out = {};
   for (const [k, override] of Object.entries(v)) {
     out[k] = fix_override(k, override)
@@ -99,7 +99,7 @@ function fix_overrides(v) {
   return out;
 }
 
-function get_sitehashpw(url) {
+function get_sitehashpw (url) {
   const sitename = getsitename(url);
   set_setting("last_site", sitename);
   const site_settings = get_site_settings(sitename);
@@ -109,6 +109,8 @@ function get_sitehashpw(url) {
 
   let pw = get_setting(pw_key);
   if (pw == "") {
+    // TODO this prompt() doesn't work in Firefox. But I really
+    // don't want the ContentScript to see the AntiPhish.
     const new_pw = prompt('Your AntiPhish is: ' + get_setting('antiphish') +
       '. Do not enter your master password here if this does not match what ' +
       'the extension options show, or if the AntiPhish message is missing ' +
@@ -125,7 +127,7 @@ function get_sitehashpw(url) {
 
 let q = Promise.resolve();
 
-function do_sitehashpw(tab) {
+function do_sitehashpw (tab) {
   q = q.finally(() => {
     return get_sitehashpw(tab.url, true).then((password) => {
       chrome.tabs.executeScript(tab.id, {
@@ -140,19 +142,13 @@ function do_sitehashpw(tab) {
         const message = {};
         for (const fieldname of fieldnames)
           message[fieldname] = password;
-        chrome.tabs.sendMessage(tab.id, message, (response) => {
-          if (!response.sitehashpw_status) {
-            alert(
-              'Failed to insert password: content script failed.'
-            );
-          }
-        });
+        chrome.tabs.sendMessage(tab.id, message);
       });
     });
   });
 }
 
-function init() {
+function init () {
   chrome.storage.sync.get(Object.keys(settings_sync), (new_settings) => {
     update_settings(new_settings);
     chrome.storage.local.get(Object.keys(settings_local), (new_settings) => {
