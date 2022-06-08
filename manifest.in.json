@@ -44,6 +44,7 @@
       "punycode.js/punycode.js",
       "publicsuffixlist.js/publicsuffixlist.js",
       "public-suffix-list-raw.js",
+      "webextension-polyfill/dist/browser-polyfill.js",
       "sitehashpw.js",
       "sitehashpw-extension.js"
     ]

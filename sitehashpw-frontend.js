@@ -5,22 +5,23 @@
 let antiphish, masterpw, site, generation, pw, method, len, showcommandlink;
 let q = Promise.resolve();
 
-function do_sitehashpw() {
+function do_sitehashpw () {
   q = q.finally(() => {
     const sitename = getsitename(site.value);
     const method_name = method.options[method.selectedIndex].value;
     return sitehashpw(sitename, generation.value, methods[method_name].func,
       len.value, masterpw.value).then((password) => {
       pw.value = password;
-      if (document.activeElement == pw)
+      if (document.activeElement == pw) {
         pw.select();
+      }
     });
   });
 }
 
 let timed_sitehashpw_timer;
 
-function timed_sitehashpw() {
+function timed_sitehashpw () {
   if (timed_sitehashpw_timer != null)
     clearTimeout(timed_sitehashpw_timer);
   localStorage.setItem("len", len.value);
@@ -45,12 +46,12 @@ function timed_sitehashpw() {
   return true;
 }
 
-function select_this() {
+function select_this () {
   this.select();
   return true;
 }
 
-function register_input_events(box) {
+function register_input_events (box) {
   if (box.type == "password" || box.type == "text")
     box.onclick = select_this;
   box.onchange = timed_sitehashpw;
@@ -59,7 +60,7 @@ function register_input_events(box) {
   box.onblur = timed_sitehashpw;
 }
 
-function init() {
+function init () {
   // Get objects.
   masterpw = document.getElementById("masterpw");
   site = document.getElementById("site");
@@ -87,7 +88,7 @@ function init() {
         localStorage.getItem("method"))
         method.selectedIndex = i;
 
-      // Fill in queried URL.
+  // Fill in queried URL.
   if (location.hash.length > 1)
     site.value = location.hash.substr(1);
   else if (document.referrer != "")
@@ -108,7 +109,7 @@ function init() {
   showcommandlink.onclick = show_command;
 }
 
-function show_command() {
+function show_command () {
   console.log(methods[method.options[method.selectedIndex].value].command);
   alert(methods[method.options[method.selectedIndex].value].command);
 }

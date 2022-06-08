@@ -131,6 +131,9 @@ async function do_alert (tab, message) {
     return;
   }
   await browser.tabs.executeScript(tab.id, {
+    "file": "webextension-polyfill/dist/browser-polyfill.js"
+  });
+  await browser.tabs.executeScript(tab.id, {
     "file": "sitehashpw-extension-contentscript.js"
   });
   await browser.tabs.sendMessage(tab.id, {
@@ -144,6 +147,9 @@ async function do_prompt (tab, message) {
     return null;
   }
   await browser.tabs.executeScript(tab.id, {
+    "file": "webextension-polyfill/dist/browser-polyfill.js"
+  });
+  await browser.tabs.executeScript(tab.id, {
     "file": "sitehashpw-extension-contentscript.js"
   });
   const response = await browser.tabs.sendMessage(tab.id, {
@@ -155,6 +161,9 @@ async function do_prompt (tab, message) {
 function do_sitehashpw (tab) {
   q = q.finally(async () => {
     const password = await get_sitehashpw(tab, tab.url, true);
+    await browser.tabs.executeScript(tab.id, {
+      "file": "webextension-polyfill/dist/browser-polyfill.js"
+    });
     const fieldnames = await browser.tabs.executeScript(tab.id, {
       "file": "sitehashpw-extension-contentscript.js"
     });

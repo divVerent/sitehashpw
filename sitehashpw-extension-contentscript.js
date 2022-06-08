@@ -13,6 +13,8 @@ function is_viable (e) {
 
 function set_value (e, password) {
   e.value = password;
+  e.dispatchEvent(new Event('input'));
+  e.dispatchEvent(new Event('change'));
 }
 
 function set_password (password) {
