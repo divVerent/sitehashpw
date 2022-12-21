@@ -15,12 +15,31 @@ EOF
 EEOF
 
 sed -e "
-	1 i publicSuffixListRaw = '\\\\
+	1 i export publicSuffixListRaw = '\\\\
 	s,\\\\,\\\\\\\\,g
 	s,',\\\\',g
 	s,$,\\\\n\\\\,
 	\$ a ';
 " < list/public_suffix_list.dat > public-suffix-list-raw.js
+
+cat \
+	module-defs.js \
+	argon2-browser/lib/argon2.js \
+	crypto-js/core.js \
+	crypto-js/x64-core.js \
+	crypto-js/cipher-core.js \
+	crypto-js/hmac.js \
+	crypto-js/pbkdf2.js \
+	crypto-js/sha256.js \
+	crypto-js/enc-base64.js \
+	crypto-js/format-hex.js \
+	punycode.js/punycode.js \
+	publicsuffixlist.js/publicsuffixlist.js \
+	public-suffix-list-raw.js \
+	webextension-polyfill/dist/browser-polyfill.js \
+	sitehashpw.js \
+	sitehashpw-extension.js \
+	> background.js
 
 rm -f extension.zip
 zip -9r extension.zip \
