@@ -69,6 +69,8 @@ case "$generation" in
 			)
 		)
 		;;
+	# TODO: Parse options in the same form as the extension, and provide a
+	# way to export all settings from the extension into a hosts directory.
 esac
 
 case "$1" in
