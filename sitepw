@@ -1,8 +1,8 @@
 #!/bin/sh
 
 case "$1" in
-	-g) generation=$2; shift; shift ;;
-	*)  generation= ;;
+	-g) flagsettings=$2; shift; shift ;;
+	*)  flagsettings= ;;
 esac
 
 copy() {
@@ -26,8 +26,12 @@ case "$1" in
 	*)  url=$1      ;;
 esac
 
-pw=`cat ~/.sitepw`
 host=${url#*//}
+if [ x"$host" = x"$url" ]; then
+	proto=https:
+else
+	proto=${url%%//*}
+fi
 host=${host%%/*}
 host=${host#*@}
 host=${host%:*}
@@ -41,50 +45,116 @@ while :; do
 			;;
 	esac
 done
-
-defaultgeneration=a1
-f=$HOME/.sitepw.hosts/$host
-if [ -z "$generation" ]; then
-	generation=`cat "$f" 2>/dev/null`
-fi
-if [ -z "$generation" ]; then
-	generation=$defaultgeneration
-fi
-echo() {
-	cat <<EOF
-$*
-EOF
-}
-echo "$generation" > "$f"
-case "$generation" in
-	0)
-		opw=`echo "$host#$pw#$host#$pw#$host" | openssl sha1 -binary | openssl base64 -e | cut -c 1-12`
+case "$proto" in
+	https:)
 		;;
-	[0-9]*)
-		opw=`echo "$host" | openssl sha256 -hmac "$pw#$generation" -binary | openssl base64 -e | cut -c 1-12`
+	*)
+		host=$proto//$host
 		;;
-	a[0-9]*)
-		opw=$(
-			(
-				len=12
-				masterpwd=$pw
-				site=$host
-				generation=${generation#a}
-				echo -n "$masterpwd" | argon2 "$site#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 1 -m 14 -p 1 -l $(((len+1)*3/4)) | perl -0777 -ne 'print pack "H*", $_' | openssl base64 -e | cut -c 1-$len
-			)
-		)
-		;;
-	# TODO: Parse options in the same form as the extension, and provide a
-	# way to export all settings from the extension into a hosts directory.
 esac
+hostfile="$HOME/.sitepw.hosts/`printf '%s' "$host" | tr /: __`"
+
+confsettings=`cat ~/.sitepw.conf 2>/dev/null`
+hostsettings=`cat "$hostfile" 2>/dev/null`
+settings="$confsettings $hostsettings $flagsettings"
+
+alias=$host
+generation=1
+len=12
+method=Argon2id-16Mx1
+oldpw=false
+
+for s in $settings; do
+	k=${s%%=*}
+	v=${s#*=}
+	case "$k" in
+		alias)
+			alias=$v
+			;;
+		generation)
+			generation=$v
+			;;
+		len)
+			len=$v
+			;;
+		method)
+			method=$v
+			;;
+		use_old_password)
+			oldpw=true
+			;;
+		0)
+			method=SHA1
+			generation=$k
+			;;
+		[0-9]*)
+			method=HMAC-SHA-256
+			generation=$k
+			;;
+		a[0-9]*)
+			method=Argon2id-16Mx1
+			generation=${k#a}
+			;;
+	esac
+done
+
+{
+	if [ x"$alias" != x"$host" ]; then
+		printf 'alias=%s\n' "$alias"
+	fi
+	printf 'generation=%s\n' "$generation"
+	printf 'len=%s\n' "$len"
+	printf 'method=%s\n' "$method"
+	if $oldpw; then
+		printf 'use_old_password\n'
+	fi
+} > "$hostfile"
+
+if $oldpw; then
+	pw=`cat ~/.sitepw.old`
+else
+	pw=`cat ~/.sitepw`
+fi
+
+encode() {
+	openssl base64 -e | cut -c 1-"$len"
+}
+
+generate() {
+	case "$method" in
+		SHA1)
+			printf '%s#%s#%s#%s#%s\n' "$alias" "$pw" "$alias" "$pw" "$alias" | openssl sha1 -binary
+			;;
+		HMAC-SHA-256)
+			printf '%s\n' "$alias" | openssl sha256 -hmac "$pw#$generation" -binary
+			;;
+		PBKDF2-SHA-256-10k)
+			printf '%s' "$pw" | nettle-pbkdf2 --iterations=10000 --length=$(((len+1)*3/4)) --raw "$alias#$generation"
+			;;
+		Argon2id-1Mx16)
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 16 -m 10 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			;;
+		Argon2id-4Mx3)
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 3 -m 12 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			;;
+		Argon2id-16Mx1)
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 1 -m 14 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			;;
+		*)
+			printf >&2 'Unsupported method: %s\n' "$method"
+			;;
+	esac
+}
+
+opw=`generate | encode`
 
 case "$1" in
 	'')
-		echo -n "$opw" | copy
+		printf '%s' "$opw" | copy
 		xmessage -timeout 2 -buttons OK "$host -> $opw"
 		;;
 	*)
-		echo "$opw"
+		printf '%s\n' "$opw"
 		;;
 esac
 
