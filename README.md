@@ -1,3 +1,24 @@
+# DEPRECATION
+
+Due to introduction of Manifest v3, and the Argon2 library now depending
+on WebAssembly which cannot be safely used in an extension (requires an unsafe
+option in the Content Security Policy), this extension is now deprecated.
+
+You can however always regenerate your passwords using a shell command
+on Linux, or the web version of this tool (run `./pack.sh` then view
+`index.html` in a browser). Thus, you should not lose access to your accounts
+due to this deprecation.
+
+A shell script tool is also provided for Linux or Chrome OS users in the
+file `sitepw`, which can be used as follows:
+
+1. Write your master password into the file ~/.sitepw
+2. Run `./sitepw hostname.com`
+3. View the password in your shell.
+
+Alternatively, running `./sitepw` without arguments will take the current
+web URL from the clipboard and paste its password into the clipboard.
+
 # SiteHashPW
 
 A hash based password manager that generates unique passwords per website
