@@ -50,6 +50,11 @@ fi
 if [ -z "$generation" ]; then
 	generation=$defaultgeneration
 fi
+echo() {
+	cat <<EOF
+$*
+EOF
+}
 echo "$generation" > "$f"
 case "$generation" in
 	0)
