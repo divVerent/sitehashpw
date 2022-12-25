@@ -117,16 +117,115 @@ else
 fi
 
 encode() {
-	openssl base64 -e | cut -c 1-"$len"
+	base64 -e | cut -c 1-"$len"
 }
 
 generate() {
 	case "$method" in
 		SHA1)
-			printf '%s#%s#%s#%s#%s\n' "$alias" "$pw" "$alias" "$pw" "$alias" | openssl sha1 -binary
+			printf '%s#%s#%s#%s#%s\n' "$alias" "$pw" "$alias" "$pw" "$alias" | nettle-hash -a sha1 --raw
 			;;
 		HMAC-SHA-256)
-			printf '%s\n' "$alias" | openssl sha256 -hmac "$pw#$generation" -binary
+			# As nettle-hash can't do HMAC directly, this is done
+			# manually here :(
+			key_hex=$(printf '%s#%s' "$pw" "$generation" | xxd -p)
+			case "$key_hex" in
+				?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????*)
+					# Too long key.
+					# Hash it.
+					key_hex=$(printf '%s' "$key_hex" | xxd -p -r | nettle-hash -a sha256 --raw | xxd -p)
+					;;
+			esac
+			while :; do
+				case "$key_hex" in
+					????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????)
+						break
+						;;
+					*)
+						key_hex=$key_hex'00'
+				esac
+			done
+			xor_ipad() {
+				sed -e '
+					s,..,<&>,g;
+					s,<0,3,g;
+					s,<1,2,g;
+					s,<2,1,g;
+					s,<3,0,g;
+					s,<4,7,g;
+					s,<5,6,g;
+					s,<6,5,g;
+					s,<7,4,g;
+					s,<8,b,g;
+					s,<9,a,g;
+					s,<a,9,g;
+					s,<b,8,g;
+					s,<c,f,g;
+					s,<d,e,g;
+					s,<e,d,g;
+					s,<f,c,g;
+					s,0>,6,g;
+					s,1>,7,g;
+					s,2>,4,g;
+					s,3>,5,g;
+					s,4>,2,g;
+					s,5>,3,g;
+					s,6>,0,g;
+					s,7>,1,g;
+					s,8>,e,g;
+					s,9>,f,g;
+					s,a>,c,g;
+					s,b>,d,g;
+					s,c>,a,g;
+					s,d>,b,g;
+					s,e>,8,g;
+					s,f>,9,g;
+				'
+			}
+			xor_opad() {
+				sed -e '
+					s,..,<&>,g;
+					s,<0,5,g;
+					s,<1,4,g;
+					s,<2,7,g;
+					s,<3,6,g;
+					s,<4,1,g;
+					s,<5,0,g;
+					s,<6,3,g;
+					s,<7,2,g;
+					s,<8,d,g;
+					s,<9,c,g;
+					s,<a,f,g;
+					s,<b,e,g;
+					s,<c,9,g;
+					s,<d,8,g;
+					s,<e,b,g;
+					s,<f,a,g;
+					s,0>,c,g;
+					s,1>,d,g;
+					s,2>,e,g;
+					s,3>,f,g;
+					s,4>,8,g;
+					s,5>,9,g;
+					s,6>,a,g;
+					s,7>,b,g;
+					s,8>,4,g;
+					s,9>,5,g;
+					s,a>,6,g;
+					s,b>,7,g;
+					s,c>,0,g;
+					s,d>,1,g;
+					s,e>,2,g;
+					s,f>,3,g;
+				'
+			}
+			{
+				printf '%s\n' "$key_hex" | xor_opad | xxd -p -r
+				{
+					printf '%s' "$key_hex" | xor_ipad | xxd -p -r
+					printf '%s\n' "$alias"
+				} | nettle-hash -a sha256 --raw
+			} | nettle-hash -a sha256 --raw
 			;;
 		PBKDF2-SHA-256-10k)
 			printf '%s' "$pw" | nettle-pbkdf2 --iterations=10000 --length=$(((len+1)*3/4)) --raw "$alias#$generation"
