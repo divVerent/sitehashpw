@@ -26,6 +26,15 @@ case "$1" in
 	*)  url=$1      ;;
 esac
 
+case "$url" in
+	*.*)
+		;;
+	*)
+		echo >&2 'URL contains no dots. Likely wrong.'
+		exit 1
+		;;
+esac
+
 host=${url#*//}
 if [ x"$host" = x"$url" ]; then
 	proto=https:
@@ -117,7 +126,7 @@ else
 fi
 
 encode() {
-	base64 -e | cut -c 1-"$len"
+	base64 | cut -c 1-"$len"
 }
 
 generate() {
@@ -250,7 +259,7 @@ opw=`generate | encode`
 case "$1" in
 	'')
 		printf '%s' "$opw" | copy
-		xmessage -timeout 2 -buttons OK "$host -> $opw"
+		xmessage -timeout 1 -buttons OK "$host -> $opw"
 		;;
 	*)
 		printf '%s\n' "$opw"
