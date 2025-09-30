@@ -9,7 +9,7 @@ copy() {
 	if [ -n "$WAYLAND_DISPLAY" ]; then
 		wl-copy
 	else
-		xclip -i
+		xclip -selection clipboard -i
 	fi
 }
 
@@ -17,7 +17,7 @@ paste() {
 	if [ -n "$WAYLAND_DISPLAY" ]; then
 		wl-paste
 	else
-		xclip -o
+		xclip -selection clipboard -o
 	fi
 }
 
