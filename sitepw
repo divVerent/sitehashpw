@@ -72,7 +72,7 @@ generation=1
 len=12
 method=Argon2id-16Mx1
 oldpw=false
-encoding=base85
+encoding=base64
 
 for s in $settings; do
 	k=${s%%=*}

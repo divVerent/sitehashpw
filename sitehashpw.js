@@ -8,6 +8,8 @@ const ARGON2_PEPPER = "0." +
   "20787957635076190854695561983497877003387784163176" +
   "96080751358830554198772854821397886002778654260353";
 
+// TODO: add base85 variants.
+
 function hmac_func(func) {
   return (site, masterpw, generation, len) =>
     Promise.resolve(func(site + "\n", masterpw + "#" + generation).toString(
@@ -81,7 +83,7 @@ function getsitename(site) {
         protocolPrefix = parser.protocol + '//';
     }
   }
-  // For known domains, 
+  // For known domains,
   const domain = window.publicSuffixList.getDomain(site);
   // Ensure at least two labels.
   if (domain.match(/\./)) {
