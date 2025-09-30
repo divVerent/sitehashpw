@@ -72,6 +72,7 @@ generation=1
 len=12
 method=Argon2id-16Mx1
 oldpw=false
+encoding=base85
 
 for s in $settings; do
 	k=${s%%=*}
@@ -88,6 +89,9 @@ for s in $settings; do
 			;;
 		method)
 			method=$v
+			;;
+		encoding)
+			encoding=$v
 			;;
 		use_old_password)
 			oldpw=true
@@ -114,6 +118,7 @@ done
 	printf 'generation=%s\n' "$generation"
 	printf 'len=%s\n' "$len"
 	printf 'method=%s\n' "$method"
+	printf 'encoding=%s\n' "$encoding"
 	if $oldpw; then
 		printf 'use_old_password\n'
 	fi
@@ -126,10 +131,29 @@ else
 fi
 
 encode() {
-	base64 | cut -c 1-"$len"
+	case "$encoding" in
+		base64)
+			base64 | cut -c 1-"$len"
+			;;
+		base85)
+			basenc --z85 --wrap=0 | cut -c 1-"$len"
+			;;
+	esac
 }
 
 generate() {
+	case "$encoding" in
+		base64)
+			# This allows for partial output mode of base64 blocks.
+			# Sequence: 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 3, 5 -> 4.
+			bytes=$(((len + 1) * 3 / 4))
+			;;
+		base85)
+			# basenc --z85 has no padding logic, so always use whole blocks.
+			# Sequence: 1 -> 4, 2 -> 4, 3 -> 4, 4 -> 4, 5 -> 4, 6 -> 8.
+			bytes=$(((len + 4) / 5 * 4))
+			;;
+	esac
 	case "$method" in
 		SHA1)
 			printf '%s#%s#%s#%s#%s\n' "$alias" "$pw" "$alias" "$pw" "$alias" | nettle-hash -a sha1 --raw
@@ -237,16 +261,16 @@ generate() {
 			} | nettle-hash -a sha256 --raw
 			;;
 		PBKDF2-SHA-256-10k)
-			printf '%s' "$pw" | nettle-pbkdf2 --iterations=10000 --length=$(((len+1)*3/4)) --raw "$alias#$generation"
+			printf '%s' "$pw" | nettle-pbkdf2 --iterations=10000 --length="$bytes" --raw "$alias#$generation"
 			;;
 		Argon2id-1Mx16)
-			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 16 -m 10 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 16 -m 10 -p 1 -l "$bytes" | xxd -r -p
 			;;
 		Argon2id-4Mx3)
-			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 3 -m 12 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 3 -m 12 -p 1 -l "$bytes" | xxd -r -p
 			;;
 		Argon2id-16Mx1)
-			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 1 -m 14 -p 1 -l $(((len+1)*3/4)) | xxd -r -p
+			printf '%s' "$pw" | argon2 "$alias#$generation#0.2078795763507619085469556198349787700338778416317696080751358830554198772854821397886002778654260353" -id -r -t 1 -m 14 -p 1 -l "$bytes" | xxd -r -p
 			;;
 		*)
 			printf >&2 'Unsupported method: %s\n' "$method"
