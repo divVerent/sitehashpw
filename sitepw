@@ -135,7 +135,7 @@ encode() {
 		base64)
 			base64 | cut -c 1-"$len"
 			;;
-		base85)
+		ascii85)
 			basenc --z85 --wrap=0 | cut -c 1-"$len"
 			;;
 	esac
@@ -148,7 +148,7 @@ generate() {
 			# Sequence: 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 3, 5 -> 4.
 			bytes=$(((len + 1) * 3 / 4))
 			;;
-		base85)
+		ascii85)
 			# basenc --z85 has no padding logic, so always use whole blocks.
 			# Sequence: 1 -> 4, 2 -> 4, 3 -> 4, 4 -> 4, 5 -> 4, 6 -> 8.
 			bytes=$(((len + 4) / 5 * 4))
